@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="tr" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Askeri Harekatın Yönetimi - Final Testi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            transition: background-color 0.3s ease;
+        }
+        .option-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .option-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .option-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Streak Animation */
+        .streak-pop {
+            animation: streakPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes streakPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.5); }
+            100% { transform: scale(1); }
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 md:p-6 bg-[#f0f2f5] dark:bg-slate-900 text-slate-800 dark:text-slate-100">
+
+    <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-3xl overflow-hidden relative flex flex-col min-h-[650px] border border-gray-100 dark:border-slate-700 transition-colors duration-300">
+        
+        <div class="bg-slate-900 dark:bg-black/40 text-white p-6 flex justify-between items-center shadow-md z-10 transition-colors duration-300">
+            <div class="flex items-center gap-4">
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold tracking-tight text-white">Askeri Harekatın Yönetimi</h1>
+                    <p class="text-slate-400 text-xs md:text-sm mt-1 flex items-center gap-2">
+                        <span class="bg-blue-600 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider text-white">Final</span>
+                        <span>Çalışma Testi</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <!-- Streak Display (Hidden by default, shown in Infinite Mode) -->
+                <div id="streak-container" class="hidden flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 px-3 py-1.5 rounded-xl transition-all duration-300">
+                    <i id="streak-fire" class="fas fa-fire text-orange-500 text-lg transition-transform"></i>
+                    <div class="flex flex-col leading-none">
+                        <span class="text-[10px] text-orange-400 font-bold uppercase tracking-wider">Seri</span>
+                        <span id="streak-count" class="text-lg font-bold text-orange-500 leading-none">0</span>
+                    </div>
+                </div>
+
+                <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full bg-slate-800 dark:bg-slate-700 flex items-center justify-center text-yellow-400 hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors border border-slate-700 dark:border-slate-600">
+                    <i class="fas fa-sun dark:hidden"></i>
+                    <i class="fas fa-moon hidden dark:block text-slate-200"></i>
+                </button>
+
+                <div id="score-display" class="hidden bg-slate-800/80 dark:bg-slate-700/80 backdrop-blur px-4 py-2 rounded-xl font-mono border border-slate-700 dark:border-slate-600">
+                    <span class="text-slate-400 text-xs block text-center mb-1">SKOR</span>
+                    <div class="flex items-baseline gap-1">
+                        <span id="current-score" class="text-xl font-bold text-green-400">0</span>
+                        <span class="text-slate-500">/</span>
+                        <span id="total-count" class="text-sm text-slate-300">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-6 md:p-8 flex-grow flex flex-col relative overflow-y-auto">
+            
+            <div id="start-screen" class="flex flex-col justify-center items-center h-full space-y-8 fade-in my-auto">
+                <div class="text-center space-y-4 max-w-lg">
+                    <div class="w-24 h-24 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-3xl flex items-center justify-center mx-auto text-4xl shadow-inner mb-6 transition-colors">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-slate-800 dark:text-white">Sınav Modu Seçimi</h2>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Final sınavına hazırlık için iki farklı mod bulunmaktadır.
+                        Kendinizi denemek için <span class="font-semibold text-slate-800 dark:text-slate-200">Test Modu</span>'nu, 
+                        eksiklerinizi kapatmak için <span class="font-semibold text-slate-800 dark:text-slate-200">Sonsuz Mod</span>'u seçin.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4 w-full max-w-xl">
+                    <button onclick="startQuiz('normal')" class="group relative flex flex-col items-center justify-center p-6 bg-white dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-600 rounded-2xl hover:border-blue-500 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-slate-600 transition-all duration-300 text-left shadow-sm">
+                        <div class="mb-3 w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                            <i class="fas fa-list-ol"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-800 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-400">Test Modu</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 text-center mt-2">Sorular sıralı sorulur. Tek seferlik test.</p>
+                    </button>
+                    
+                    <button onclick="startQuiz('infinite')" class="group relative flex flex-col items-center justify-center p-6 bg-white dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-600 rounded-2xl hover:border-indigo-500 dark:hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-slate-600 transition-all duration-300 text-left shadow-sm">
+                        <div class="mb-3 w-12 h-12 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-800 dark:text-white group-hover:text-indigo-700 dark:group-hover:text-indigo-400">Sonsuz Mod</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 text-center mt-2">Yanlışlar tekrar sorulur. Tam öğrenme.</p>
+                    </button>
+                </div>
+            </div>
+
+            <div id="quiz-container" class="hidden flex flex-col h-full max-w-3xl mx-auto w-full">
+                <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2 mb-8 overflow-hidden">
+                    <div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                </div>
+
+                <div class="mb-8 fade-in">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-bold tracking-wide">SORU <span id="q-number">1</span></span>
+                        <span id="infinite-badge" class="hidden px-3 py-1 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 rounded-lg text-sm font-bold flex items-center gap-1"><i class="fas fa-redo-alt text-xs"></i> Tekrar</span>
+                    </div>
+                    <h3 id="question-text" class="text-xl md:text-2xl font-bold text-slate-800 dark:text-white leading-snug">
+                        <!-- Questions will be injected here via innerHTML -->
+                        </h3>
+                </div>
+
+                <div id="options-container" class="grid gap-3 flex-grow content-start fade-in delay-75">
+                    </div>
+
+                <div id="feedback-area" class="hidden mt-6 p-5 rounded-xl border-l-4 shadow-sm fade-in dark:bg-slate-700/50"></div>
+
+                <button id="next-btn" onclick="nextQuestion()" class="hidden mt-6 w-full bg-slate-900 dark:bg-blue-600 text-white py-4 rounded-xl hover:bg-slate-800 dark:hover:bg-blue-700 transition-all font-bold text-lg shadow-lg hover:shadow-xl active:scale-[0.99] flex items-center justify-center gap-2">
+                    <span>Sonraki Soru</span> <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <div id="result-screen" class="hidden flex flex-col items-center justify-center h-full text-center space-y-8 fade-in">
+                <div class="relative">
+                    <div class="w-32 h-32 mx-auto rounded-full flex items-center justify-center text-5xl mb-4 shadow-xl relative z-10 transition-colors" id="result-icon-bg">
+                        <i id="result-icon" class="fas fa-trophy"></i>
+                    </div>
+                    <div class="absolute inset-0 bg-blue-500 blur-2xl opacity-20 dark:opacity-40 rounded-full z-0"></div>
+                </div>
+                
+                <div class="space-y-2">
+                    <h2 class="text-4xl font-bold text-slate-800 dark:text-white">Test Tamamlandı!</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-lg">İşte performans raporunuz</p>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-4 w-full max-w-md mx-auto">
+                    <div class="bg-slate-50 dark:bg-slate-700 p-4 rounded-2xl border border-slate-100 dark:border-slate-600">
+                        <p class="text-slate-400 dark:text-slate-300 text-xs font-bold uppercase tracking-wider mb-1">Toplam</p>
+                        <p class="text-2xl font-bold text-slate-800 dark:text-white" id="final-total">0</p>
+                    </div>
+                    <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-2xl border border-green-100 dark:border-green-800">
+                        <p class="text-green-600 dark:text-green-400 text-xs font-bold uppercase tracking-wider mb-1">Doğru</p>
+                        <p class="text-2xl font-bold text-green-700 dark:text-green-400" id="final-correct">0</p>
+                    </div>
+                    <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-2xl border border-blue-100 dark:border-blue-800">
+                        <p class="text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-wider mb-1">Başarı</p>
+                        <p class="text-2xl font-bold text-blue-700 dark:text-blue-400" id="final-percent">%0</p>
+                    </div>
+                </div>
+
+                <div class="pt-6 w-full max-w-xs">
+                    <button onclick="location.reload()" class="w-full bg-blue-600 text-white px-8 py-4 rounded-xl hover:bg-blue-700 transition-colors font-bold shadow-lg hover:shadow-blue-500/30 flex items-center justify-center gap-2">
+                        <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- DARK MODE LOGIC ---
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Initialize theme on load
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        // --- QUIZ DATA & LOGIC ---
+        const questionsDB = [
+            {
+                id: 1,
+                text: "Anayasa, kanun ve diğer mevzuat ile TSK'ya verilen görevleri tanımlayan; vazifenin yerine getirilmesi için kuvvetin ne yapması gerektiğini belirten temel kavram nedir?",
+                correct: "Vazife",
+                options: ["Vazife", "Sorumluluk", "Amaç", "Gereksinim"]
+            },
+            {
+                id: 2,
+                text: "Kuvvetlerin yetenekleri temelinde, kanunlarla belirlenen vazifelerini yerine getirebilmeleri için icra ettikleri, kendilerine has sorumluluklara ne ad verilir?",
+                correct: "Fonksiyon",
+                options: ["Fonksiyon", "Operasyonel Yetkinlik", "Stratejik Hedefleme", "Taktik Manevra Kabiliyeti"]
+            },
+            {
+                id: 3,
+                text: "Aşağıdakilerden hangisi kuvvetin kullanılması (harekat) fonksiyonlarından biri değildir?",
+                correct: "Pasif Hava Savunma Tedbirleri",
+                options: ["Pasif Hava Savunma Tedbirleri", "Stratejik Taarruz ve Hava Hakimiyeti", "Hava Muharebesi ve Uzay Kontrolü", "İstihbarat, Gözetleme ve Hedefleme"]
+            },
+            {
+                id: 5,
+                text: "Düşman hava savunma sistemlerinin baskı altına alınması anlamına gelen kısaltma nedir?",
+                correct: "SEAD (Suppression of Enemy Air Defenses)",
+                options: ["SEAD (Suppression of Enemy Air Defenses)", "DHSB (Düşman Hava Savunma Baskısı)", "EWSD (Elektronic Warfare Suppressive Domination)", "EHBH (Elektronik Harp Baskıcı Hakimiyet)"]
+            },
+            {
+                id: 6,
+                text: "Aşağıdakilerden hangisi kuvvetin oluşturulması ve idamesi fonksiyonlarından biri değildir?",
+                correct: "Hava Savunma",
+                options: ["Hava Savunma", "Levazım", "Mühimmat & Mühimmat Tahrip", "Tabip"]
+            },
+            {
+                id: 7,
+                text: "Düşmanın lider kadrosu, hassas kaynakları ve stratejik hedeflerine karşı, milli hedeflerimizi gerçekleştirecek şekilde doğrudan etki yaratabilecek harekat türü hangisidir?",
+                correct: "Stratejik Taarruz",
+                options: ["Stratejik Taarruz", "Suikast", "Stratejik Bombardıman", "İdam"]
+            },
+            {
+                id: 8,
+                text: "Düşman hava gücünün tesirsiz hale getirilmesi veya etkisinin azaltılması ile hava ve uzay kontrolünün kazanılması maksadıyla yapılan harekat türü nedir?",
+                correct: "Mukabil Hava Harekatı",
+                options: ["Mukabil Hava Harekatı", "Hava ve Uzay Üstünlüğü Harekatı", "Düşman Hava Savunmasını Bastırma", "Stratejik Hava Sahası Kontrolü"]
+            },
+            {
+                id: 9,
+                text: "Savaşta ve savaş dışı harekatta, kaza kırım veya tehdit altındaki dost personeli kurtarmak amacıyla yapılan harekat hangisidir?",
+                correct: "Personel Kurtarma (PK)",
+                options: ["Personel Kurtarma (PK)", "Hava İndirme Harekatı (HİH)", "Muharebe Arama Kurtarma (MAK)", "Tıbbi Tahliye Operasyonu (TTO)"]
+            },
+            {
+                id: 10,
+                text: "Aşağıdakilerden hangileri hava kuvvetlerinin harekat fonksiyonunun faaliyet alanlarında yer almaktadır?<div class='mt-4 text-base font-normal space-y-1 text-slate-600 dark:text-slate-300'><div>1. Stratejik Taarruz</div><div>2. Personel Temini ve Eğitimi</div><div>3. Mukabil Hava Harekatı</div><div>4. Tesis Yönetimi ve İnşaat</div><div>5. Hava Ulaştırma</div><div>(Bu soru verilmediği için tahmini bir soru yerleştirilmiştir.)</div></div>",
+                correct: "1, 3 ve 5",
+                options: ["1, 3 ve 5", "1 ve 2", "2, 4 ve 5", "Yalnız 3"]
+            },
+            {
+                id: 11,
+                text: "Aşağıdakilerden hangisi hava ve uzay gücünün ayırt edici yeteneklerinden biri değildir?",
+                correct: "Yakın Hava Desteği",
+                options: ["Yakın Hava Desteği", "Esneklik ve Çok Yönlülük", "Hız, Menzil ve İrtifa", "Hassas Vuruş Kabiliyeti"]
+            },
+            {
+                id: 13,
+                text: "Hava ve uzay gücünün karakteristik yapısını oluşturan ayırt edici özellikler dikkate alındığında, aşağıdakilerden hangileri doğrudur?<div class='mt-4 text-base font-normal space-y-1 text-slate-600 dark:text-slate-300'><div>1. Sürat</div><div>2. Menzil</div><div>3. Araziyi Elde Tutma</div><div>4. Yüksek Görünürlük</div><div>5. İrtifa ve Perspektif</div><div>(Bu soru verilmediği için tahmini bir soru yerleştirilmiştir.)</div></div>",
+                correct: "1, 2 ve 5",
+                options: ["1, 2 ve 5", "2 ve 3", "1, 3 ve 4", "Yalnız 1"]
+            },
+            {
+                id: 14,
+                text: "Hava gücünün farklı durumlara uyum sağlayabilmesi ve birçok farklı görevi icra edebilmesi özelliklerini ifade eden kavramlar nelerdir?",
+                correct: "Esneklik ve Çok Yönlülük",
+                options: ["Esneklik ve Çok Yönlülük", "Uyum Politikası", "Devamlılık ve Kalıcılık İlkeleri", "Beka Kabiliyeti ve Görünmezlik"]
+            },
+            {
+                id: 15,
+                text: "Vazifenin yerine getirilmesi için askeri faaliyetlerin planlandığı, yönlendirildiği, koordine ve kontrol edildiği süreç nedir?",
+                correct: "Komuta Kontrol",
+                options: ["Komuta Kontrol", "İstihbarat Döngüsü", "Lojistik Destek", "Müşterek Harekat"]
+            },
+            {
+                id: 16,
+                text: "KBRN kısaltmasının açılımı nedir?",
+                correct: "Kimyasal, Biyolojik, Radyolojik, Nükleer",
+                options: ["Kimyasal, Biyolojik, Radyoaktif, Nükleer", "Kimyasal, Biyolojik, Radyolojik, Nükleer", "Keyboard, Bilgisayar, Radio, Network", "Keyboard, Boardline, Radio, Network"]
+            },
+            {
+                id: 17,
+                text: "Modern hava gücünün sahip olduğu harekat yetenekleri göz önüne alındığında, aşağıdakilerden hangileri bu yetenekler kapsamındadır?<div class='mt-4 text-base font-normal space-y-1 text-slate-600 dark:text-slate-300'><div>1. Hava ve Uzay Kontrolü</div><div>2. İstihbarat, Gözetleme ve Keşif (İGK)</div><div>3. Küresel Taarruz</div><div>4. Çevik Muharebe Desteği</div><div>5. Statik Alan Savunması</div><div>(Bu soru verilmediği için tahmini bir soru yerleştirilmiştir.)</div></div>",
+                correct: "1, 2, 3 ve 4",
+                options: ["1, 2, 3 ve 4", "1 ve 3", "2 ve 4", "Yalnız 2"]
+            },
+            {
+                id: 19,
+                text: "Askeri güç unsurlarının savaş dışındaki durumlarda kullanıldığı, insani yardım veya barışı destekleme gibi faaliyetleri kapsayan harekat türü nedir?",
+                correct: "Savaş Dışı Askeri Harekat",
+                options: ["Savaş Dışı Askeri Harekat", "Barışı Koruma Harekatı", "İnsani Yardım ve Doğal Afet Desteği", "Bölgesel Güvenlik ve İstikrar Harekatı"]
+            },
+            {
+                id: 20,
+                text: "Hava gücünün, düşman hava gücüne karşı istenen derecede üstünlük sağlaması ve bunun mutlak hakimiyet seviyesine ulaşması durumlarını ifade eden kavramlar nelerdir?",
+                correct: "Hava Üstünlüğü, Hava Hakimiyeti",
+                options: ["Hava Üstünlüğü, Hava Hakimiyeti", "Hava Kontrolü ve Uzay Hakimiyeti", "Bölgesel Üstünlük ve Küresel Hakimiyet", "Taktik Üstünlük ve Stratejik Hakimiyet"]
+            },
+            {
+                id: 21,
+                text: "Tüm gayretlerin tek bir amaç doğrultusunda birleştirilmesini ifade eden prensip nedir?",
+                correct: "Emir ve Komuta Birliği",
+                options: ["Emir ve Komuta Birliği", "Kuvvetlerin Teksifi", "Harekatın Bütünlüğü", "Esneklik ve Uyum"]
+            },
+            {
+                id: 22,
+                text: "Taarruz hakkında verilen bilgilerden hangisi yanlıştır?",
+                correct: "Hedef analizine gerek yoktur",
+                options: ["Hedef analizine gerek yoktur", "Düşman savunması tamamen bastırılmalıdır", "İstihbarat desteği muhakkak şarttır", "Hedef önceliklendirmesi yapılmalıdır"]
+            },
+            {
+                id: 23,
+                text: "Harekat prensiplerinden 'Teksif' kavramı neyi ifade eder?",
+                correct: "Gücü kritik yerde toplamak",
+                options: ["Gücü kritik yerde toplamak", "Tek komuta zinciri oluşturmak", "Kesintisiz taarruz icra etmek", "Kuvvetleri geniş bir alana yaymak"]
+            },
+            {
+                id: 25,
+                text: "Yabancı ülke veya alanlarla ilgili bilgilerin toplanması, işlenmesi ve değerlendirilmesi süreci nedir?",
+                correct: "İstihbarat",
+                options: ["Lojistik", "Plan", "Casusluk", "İstihbarat"]
+            }
+        ];
+
+        let currentMode = 'normal';
+        let quizQueue = [];
+        let currentQuestion = null;
+        let score = 0;
+        let totalQuestionsAnswered = 0;
+        let isWaitingForNext = false;
+        let currentStreak = 0;
+        
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startQuiz(mode) {
+            currentMode = mode;
+            score = 0;
+            totalQuestionsAnswered = 0;
+            currentStreak = 0;
+            
+            if (mode === 'normal') {
+                quizQueue = shuffle([...questionsDB]);
+                document.getElementById('infinite-badge').classList.add('hidden');
+                document.getElementById('streak-container').classList.add('hidden');
+            } else {
+                quizQueue = shuffle([...questionsDB]); 
+                document.getElementById('infinite-badge').classList.remove('hidden');
+                document.getElementById('streak-container').classList.remove('hidden');
+                updateStreakDisplay();
+            }
+
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-container').classList.remove('hidden');
+            document.getElementById('score-display').classList.remove('hidden');
+            
+            updateScoreDisplay();
+            loadNextQuestion();
+        }
+
+        function loadNextQuestion() {
+            if (quizQueue.length === 0) {
+                endQuiz();
+                return;
+            }
+
+            isWaitingForNext = false;
+            currentQuestion = quizQueue.shift(); 
+            
+            document.getElementById('q-number').innerText = currentQuestion.id;
+            // Changed from innerText to innerHTML to support formatted questions
+            document.getElementById('question-text').innerHTML = currentQuestion.text;
+            
+            // Reset Feedback
+            const fb = document.getElementById('feedback-area');
+            fb.classList.add('hidden');
+            // Remove previous color classes
+            fb.className = 'hidden mt-6 p-5 rounded-xl border-l-4 shadow-sm fade-in dark:bg-slate-700/50'; 
+            
+            document.getElementById('next-btn').classList.add('hidden');
+
+            // Render Options
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            let displayOptions = shuffle([...currentQuestion.options]);
+
+            displayOptions.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                // Updated classes for Dark Mode support
+                btn.className = "option-btn w-full text-left p-5 rounded-xl border-2 border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium text-lg relative flex items-center justify-between group";
+                
+                const span = document.createElement('span');
+                span.innerText = opt;
+                btn.appendChild(span);
+
+                const icon = document.createElement('i');
+                icon.className = "fas fa-circle text-slate-200 dark:text-slate-500 group-hover:text-blue-300 transition-colors";
+                btn.appendChild(icon);
+
+                btn.onclick = () => handleAnswer(btn, opt, icon);
+                
+                btn.style.animation = `fadeIn 0.3s ease-out forwards ${index * 0.1}s`;
+                btn.style.opacity = '0'; 
+                
+                optionsContainer.appendChild(btn);
+            });
+
+            updateProgressBar();
+        }
+
+        function handleAnswer(btn, selectedOption, icon) {
+            if (isWaitingForNext) return;
+            isWaitingForNext = true;
+
+            const isCorrect = selectedOption === currentQuestion.correct;
+            const allBtns = document.querySelectorAll('.option-btn');
+
+            allBtns.forEach(b => {
+                b.disabled = true;
+                b.classList.remove('hover:border-blue-500', 'hover:bg-blue-50', 'dark:hover:border-blue-500', 'dark:hover:bg-slate-600');
+                b.classList.add('opacity-70'); 
+                
+                // Highlight correct one if wrong selected
+                const btnText = b.querySelector('span').innerText;
+                if (btnText === currentQuestion.correct) {
+                    b.classList.remove('opacity-70', 'border-slate-200', 'dark:border-slate-600', 'bg-white', 'dark:bg-slate-700');
+                    b.classList.add('bg-green-50', 'dark:bg-green-900/30', 'border-green-500', 'dark:border-green-500', 'text-green-800', 'dark:text-green-300');
+                    const bIcon = b.querySelector('i');
+                    bIcon.className = "fas fa-check-circle text-green-500 text-xl";
+                }
+            });
+
+            btn.classList.remove('opacity-70'); 
+            
+            if (isCorrect) {
+                btn.classList.remove('border-slate-200', 'dark:border-slate-600');
+                btn.classList.add('bg-green-50', 'dark:bg-green-900/30', 'border-green-500', 'text-green-800', 'dark:text-green-300');
+                icon.className = "fas fa-check-circle text-green-500 text-xl";
+                
+                if (currentMode === 'infinite') {
+                    currentStreak++;
+                    updateStreakDisplay(true);
+                }
+
+                showFeedback(true);
+                score++;
+            } else {
+                btn.classList.remove('border-slate-200', 'dark:border-slate-600');
+                btn.classList.add('bg-red-50', 'dark:bg-red-900/30', 'border-red-500', 'text-red-800', 'dark:text-red-300', 'shake');
+                icon.className = "fas fa-times-circle text-red-500 text-xl";
+                
+                if (currentMode === 'infinite') {
+                    currentStreak = 0;
+                    updateStreakDisplay(false);
+                }
+
+                showFeedback(false);
+                
+                if (currentMode === 'infinite') {
+                    quizQueue.push(currentQuestion);
+                }
+            }
+
+            totalQuestionsAnswered++;
+            updateScoreDisplay();
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function updateStreakDisplay(animate = false) {
+            const streakEl = document.getElementById('streak-count');
+            const streakFire = document.getElementById('streak-fire');
+            streakEl.innerText = currentStreak;
+
+            if (animate && currentStreak > 0) {
+                // Remove class to restart animation
+                streakFire.classList.remove('streak-pop');
+                void streakFire.offsetWidth; // Trigger reflow
+                streakFire.classList.add('streak-pop');
+            }
+        }
+
+        function showFeedback(isCorrect) {
+            const fb = document.getElementById('feedback-area');
+            fb.classList.remove('hidden');
+            if (isCorrect) {
+                fb.classList.add('bg-green-50', 'dark:bg-green-900/20', 'border-green-500', 'text-green-800', 'dark:text-green-300');
+                fb.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="bg-green-100 dark:bg-green-800 p-2 rounded-full"><i class="fas fa-check text-green-600 dark:text-green-200"></i></div>
+                        <div>
+                            <p class="font-bold">Doğru Cevap!</p>
+                            <p class="text-sm opacity-90">Harika gidiyorsun.</p>
+                        </div>
+                    </div>`;
+            } else {
+                fb.classList.add('bg-red-50', 'dark:bg-red-900/20', 'border-red-500', 'text-red-800', 'dark:text-red-300');
+                fb.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="bg-red-100 dark:bg-red-800 p-2 rounded-full"><i class="fas fa-times text-red-600 dark:text-red-200"></i></div>
+                        <div>
+                            <p class="font-bold">Yanlış Cevap</p>
+                            <p class="text-sm">Doğru cevap: <span class="font-bold underline">${currentQuestion.correct}</span></p>
+                        </div>
+                    </div>`;
+            }
+        }
+
+        function nextQuestion() {
+            loadNextQuestion();
+        }
+
+        function updateScoreDisplay() {
+            document.getElementById('current-score').innerText = score;
+            let displayTotal = questionsDB.length;
+            document.getElementById('total-count').innerText = displayTotal;
+        }
+
+        function updateProgressBar() {
+            let progress = 0;
+            if (currentMode === 'normal') {
+                const total = questionsDB.length;
+                const completed = total - quizQueue.length - 1; 
+                progress = (completed / total) * 100;
+            } else {
+                const totalStart = questionsDB.length;
+                const currentQueueSize = quizQueue.length;
+                progress = ((totalStart - currentQueueSize) / totalStart) * 100;
+                if (progress < 5) progress = 5; 
+            }
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+        }
+
+        function endQuiz() {
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            document.getElementById('score-display').classList.add('hidden');
+            document.getElementById('streak-container').classList.add('hidden'); // Hide streak at end
+
+            document.getElementById('final-correct').innerText = score;
+            
+            let total = currentMode === 'normal' ? questionsDB.length : totalQuestionsAnswered;
+            document.getElementById('final-total').innerText = total;
+
+            let percent = 0;
+            if (total > 0) {
+                percent = Math.round((score / total) * 100);
+            }
+            
+            if (currentMode === 'infinite') {
+                document.getElementById('final-correct').innerText = questionsDB.length; 
+                percent = Math.round((questionsDB.length / totalQuestionsAnswered) * 100);
+            }
+
+            document.getElementById('final-percent').innerText = `%${percent}`;
+
+            const iconBg = document.getElementById('result-icon-bg');
+            const icon = document.getElementById('result-icon');
+            
+            if (percent >= 90) {
+                iconBg.className = "w-32 h-32 mx-auto rounded-full flex items-center justify-center text-5xl mb-4 shadow-xl relative z-10 bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-300";
+                icon.className = "fas fa-trophy";
+            } else if (percent >= 70) {
+                iconBg.className = "w-32 h-32 mx-auto rounded-full flex items-center justify-center text-5xl mb-4 shadow-xl relative z-10 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300";
+                icon.className = "fas fa-thumbs-up";
+            } else {
+                iconBg.className = "w-32 h-32 mx-auto rounded-full flex items-center justify-center text-5xl mb-4 shadow-xl relative z-10 bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-300";
+                icon.className = "fas fa-book-open";
+            }
+        }
+    </script>
+</body>
+</html>

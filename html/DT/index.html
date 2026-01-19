@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devre Teorisi Sınav Hazırlık</title>
+    
+    <!-- React & Tailwind -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+    <!-- PDF.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+
+    <!-- Tasarım Dosyası -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="root"></div>
+
+    <!-- 1. ADIM: Veri Tabanını Yükle -->
+    <script src="data.js"></script>
+    
+    <!-- 2. ADIM: Uygulama Mantığı -->
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- ICONS ---
+        const IconBase = ({ path, size = 20, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <g dangerouslySetInnerHTML={{ __html: path }} />
+            </svg>
+        );
+
+        const BookOpen = (p) => <IconBase {...p} path='<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>' />;
+        const AlertTriangle = (p) => <IconBase {...p} path='<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>' />;
+        const CheckCircle = (p) => <IconBase {...p} path='<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>' />;
+        const FileAudio = (p) => <IconBase {...p} path='<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><circle cx="12" cy="18" r="2"/>' />;
+        const ChevronRight = (p) => <IconBase {...p} path='<polyline points="9 18 15 12 9 6"/>' />;
+        const ChevronDown = (p) => <IconBase {...p} path='<polyline points="6 9 12 15 18 9"/>' />;
+        const Quote = (p) => <IconBase {...p} path='<path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/>' />;
+        const Layers = (p) => <IconBase {...p} path='<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>' />;
+        const Sun = (p) => <IconBase {...p} path='<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>' />;
+        const Moon = (p) => <IconBase {...p} path='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>' />;
+        const ZoomIn = (p) => <IconBase {...p} path='<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>' />;
+        const ZoomOut = (p) => <IconBase {...p} path='<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/>' />;
+        const PenTool = (p) => <IconBase {...p} path='<path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/>' />;
+        const Trash = (p) => <IconBase {...p} path='<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>' />;
+        const UploadCloud = (p) => <IconBase {...p} path='<polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/><polyline points="16 16 12 12 8 16"/>' />;
+
+        const MathText = ({ text }) => {
+            if (typeof text !== 'string') return text;
+            const parts = text.split(/(\$[^\$]+\$)/g);
+            return (
+                <span>
+                    {parts.map((part, index) => {
+                        if (part.startsWith('$') && part.endsWith('$')) {
+                            const math = part.slice(1, -1);
+                            try {
+                                if (window.katex) {
+                                    const html = window.katex.renderToString(math, { throwOnError: false });
+                                    return <span key={index} className="math-formula" dangerouslySetInnerHTML={{ __html: html }} />;
+                                }
+                                return <span key={index} className="italic text-blue-600">{part}</span>;
+                            } catch (e) {
+                                return part;
+                            }
+                        }
+                        return part;
+                    })}
+                </span>
+            );
+        };
+
+        const PdfViewer = () => {
+            const [pdfDoc, setPdfDoc] = useState(null);
+            const [pageNum, setPageNum] = useState(1);
+            const [scale, setScale] = useState(1.0);
+            const [isDrawingMode, setIsDrawingMode] = useState(false);
+            const [loadError, setLoadError] = useState(false);
+            
+            const pdfCanvasRef = useRef(null);
+            const drawCanvasRef = useRef(null);
+            const isDrawing = useRef(false);
+
+            // 1. Try to load PDF automatically
+            useEffect(() => {
+                const loadAutoPdf = async () => {
+                    try {
+                        const loadingTask = pdfjsLib.getDocument('render.pdf');
+                        const doc = await loadingTask.promise;
+                        setPdfDoc(doc);
+                        setLoadError(false);
+                    } catch (err) {
+                        console.warn("Otomatik yükleme başarısız (CORS/Dosya yok), manuel yükleme bekleniyor.");
+                        setLoadError(true);
+                    }
+                };
+                loadAutoPdf();
+            }, []);
+
+            // 2. Render Page when doc or page changes
+            useEffect(() => {
+                if (!pdfDoc || !pdfCanvasRef.current) return;
+
+                const renderPage = async () => {
+                    try {
+                        const page = await pdfDoc.getPage(pageNum);
+                        const viewport = page.getViewport({ scale });
+                        
+                        const canvas = pdfCanvasRef.current;
+                        const context = canvas.getContext('2d');
+                        
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+
+                        const renderContext = { canvasContext: context, viewport: viewport };
+                        await page.render(renderContext).promise;
+
+                        // Sync drawing canvas
+                        if (drawCanvasRef.current) {
+                            const dCanvas = drawCanvasRef.current;
+                            dCanvas.height = viewport.height;
+                            dCanvas.width = viewport.width;
+                            
+                            const dCtx = dCanvas.getContext('2d');
+                            dCtx.lineCap = 'round';
+                            dCtx.lineJoin = 'round';
+                            dCtx.strokeStyle = 'red';
+                            dCtx.lineWidth = 2;
+                        }
+                    } catch (e) {
+                        console.error("Render error:", e);
+                    }
+                };
+                renderPage();
+            }, [pdfDoc, pageNum, scale]);
+
+            const handleFileSelect = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                try {
+                    const fileUrl = URL.createObjectURL(file);
+                    const loadingTask = pdfjsLib.getDocument(fileUrl);
+                    const doc = await loadingTask.promise;
+                    setPdfDoc(doc);
+                    setLoadError(false);
+                    setPageNum(1);
+                } catch (err) {
+                    console.error("Dosya yükleme hatası:", err);
+                    alert("PDF yüklenemedi. Geçerli bir PDF dosyası seçtiğinizden emin olun.");
+                }
+            };
+
+            // Drawing Logic
+            const startDrawing = (e) => {
+                if (!isDrawingMode) return;
+                const canvas = drawCanvasRef.current;
+                const rect = canvas.getBoundingClientRect();
+                const ctx = canvas.getContext('2d');
+                isDrawing.current = true;
+                ctx.beginPath();
+                ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+            };
+
+            const draw = (e) => {
+                if (!isDrawingMode || !isDrawing.current) return;
+                const canvas = drawCanvasRef.current;
+                const rect = canvas.getBoundingClientRect();
+                const ctx = canvas.getContext('2d');
+                ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+                ctx.stroke();
+            };
+
+            const stopDrawing = () => {
+                isDrawing.current = false;
+            };
+
+            const clearDrawings = () => {
+                const canvas = drawCanvasRef.current;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            };
+
+            // IF ERROR: Show Manual Upload UI
+            if (loadError && !pdfDoc) {
+                return (
+                    <div className="flex flex-col items-center justify-center h-full text-white p-6 text-center space-y-4">
+                        <div className="bg-red-500/20 p-4 rounded-full">
+                            <AlertTriangle size={48} className="text-red-400" />
+                        </div>
+                        <h3 className="text-xl font-bold">Otomatik Yükleme Engellendi</h3>
+                        <p className="text-gray-300 max-w-md">
+                            Tarayıcı güvenliği (CORS), "render.pdf" dosyasını doğrudan okumamıza izin vermedi. 
+                            Lütfen dosyayı manuel olarak seçin.
+                        </p>
+                        <label className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg flex items-center gap-2 transition-all">
+                            <UploadCloud size={20} />
+                            <span>render.pdf Dosyasını Seç</span>
+                            <input 
+                                type="file" 
+                                accept="application/pdf" 
+                                className="hidden" 
+                                onChange={handleFileSelect}
+                            />
+                        </label>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="flex flex-col h-full w-full">
+                    <div className="pdf-toolbar">
+                        <div className="pdf-controls">
+                            <span className="text-sm font-mono mr-2 hidden xl:inline">render.pdf</span>
+                            <button className="pdf-btn" onClick={() => setPageNum(p => Math.max(1, p - 1))} disabled={pageNum <= 1}>&lt;</button>
+                            <span className="text-sm mx-2 whitespace-nowrap">Sayfa {pageNum} / {pdfDoc ? pdfDoc.numPages : '--'}</span>
+                            <button className="pdf-btn" onClick={() => setPageNum(p => Math.min(pdfDoc?.numPages || 1, p + 1))} disabled={!pdfDoc || pageNum >= pdfDoc.numPages}>&gt;</button>
+                        </div>
+                        
+                        <div className="pdf-controls">
+                            <button className="pdf-btn" onClick={() => setScale(s => Math.max(0.5, s - 0.2))}><ZoomOut size={16}/></button>
+                            <span className="text-xs w-8 text-center hidden xl:inline">{Math.round(scale * 100)}%</span>
+                            <button className="pdf-btn" onClick={() => setScale(s => Math.min(3, s + 0.2))}><ZoomIn size={16}/></button>
+                            
+                            <div className="w-px h-6 bg-gray-600 mx-2"></div>
+                            
+                            <button 
+                                className={`pdf-btn ${isDrawingMode ? 'active' : ''}`} 
+                                onClick={() => setIsDrawingMode(!isDrawingMode)}
+                                title="Çizim Modu"
+                            >
+                                <PenTool size={16}/>
+                            </button>
+                            <button className="pdf-btn text-red-300" onClick={clearDrawings} title="Temizle">
+                                <Trash size={16}/>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="pdf-content bg-gray-600">
+                        {pdfDoc ? (
+                            <div className="canvas-wrapper">
+                                <canvas ref={pdfCanvasRef} className="pdf-canvas" />
+                                <canvas 
+                                    ref={drawCanvasRef}
+                                    className={`drawing-canvas ${isDrawingMode ? 'pointer-events-auto' : 'pointer-events-none'}`}
+                                    onMouseDown={startDrawing}
+                                    onMouseMove={draw}
+                                    onMouseUp={stopDrawing}
+                                    onMouseLeave={stopDrawing}
+                                />
+                            </div>
+                        ) : (
+                            <div className="text-white mt-10">Yükleniyor...</div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        const QuestionCard = ({ data }) => {
+            const [isOpen, setIsOpen] = useState(false);
+
+            return (
+                <div className="card question-card fade-in">
+                    <div className="card-header" onClick={() => setIsOpen(!isOpen)}>
+                        <div className="flex items-center gap-3">
+                            <div className={`icon-box ${data.isAudioContent ? 'bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-300' : 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300'}`}>
+                                {data.isAudioContent ? <FileAudio size={20} /> : <Layers size={20} />}
+                            </div>
+                            <div>
+                                <span className="topic-badge">{data.topic}</span>
+                                <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">
+                                    <MathText text={data.title} />
+                                </h3>
+                            </div>
+                        </div>
+                        {isOpen ? <ChevronDown size={20} className="text-gray-400" /> : <ChevronRight size={20} className="text-gray-400" />}
+                    </div>
+                    
+                    {isOpen && (
+                        <div className="card-body">
+                            {data.originalText && (
+                                <div className="original-text-box">
+                                    <Quote size={16} className="absolute top-2 left-2 text-orange-400 opacity-50" />
+                                    <div className="pl-6">
+                                        <span className="label-text text-orange-800 dark:text-orange-300">SORUNUN ASLI:</span>
+                                        <span className="dark:text-gray-200">
+                                            <MathText text={data.originalText} />
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
+                            <p className="mb-4 text-gray-700 dark:text-gray-300">
+                                <strong>Özet:</strong> <MathText text={data.summary} />
+                            </p>
+                            {data.audioNote && (
+                                <div className="audio-note-box">
+                                    <FileAudio size={16} className="mt-1" />
+                                    <div>
+                                        <strong>Ses Kaydı Analizi:</strong>
+                                        <p>"<MathText text={data.audioNote} />"</p>
+                                    </div>
+                                </div>
+                            )}
+                            <div className="solution-box">
+                                <h4 className="solution-title">
+                                    <CheckCircle size={16} /> Çözüm Adımları
+                                </h4>
+                                <ul className="solution-list">
+                                    {data.steps.map((step, idx) => (
+                                        <li key={idx}>
+                                            <span className="step-number">{idx + 1}.</span>
+                                            <span><MathText text={step} /></span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const TipCard = ({ data }) => {
+            let typeClass = "tip-info";
+            let Icon = BookOpen;
+            if (data.type === 'warning') { typeClass = "tip-warning"; Icon = AlertTriangle; }
+            if (data.type === 'danger') { typeClass = "tip-danger"; Icon = AlertTriangle; }
+            if (data.type === 'tip') { typeClass = "tip-success"; Icon = CheckCircle; }
+
+            return (
+                <div className={`card tip-card fade-in ${typeClass}`}>
+                    <div className="flex justify-between items-start mb-2">
+                        <h3 className="font-bold flex items-center gap-2">
+                            <Icon size={18} /> <MathText text={data.title} />
+                        </h3>
+                        <span className="probability-badge">{data.probability}</span>
+                    </div>
+                    <p className="text-sm leading-relaxed">
+                        <MathText text={data.content} />
+                    </p>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [activeTab, setActiveTab] = useState('questions');
+            const [data, setData] = useState({ questions: [], tips: [] });
+            const [error, setError] = useState(null);
+            const [isDark, setIsDark] = useState(false);
+
+            useEffect(() => {
+                if (window.COURSE_DATA) {
+                    setData(window.COURSE_DATA);
+                } else {
+                    console.error("Veri dosyası (data.js) bulunamadı!");
+                    setError("Veri dosyası (data.js) yüklenemedi.");
+                }
+
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    setIsDark(true);
+                }
+            }, []);
+
+            useEffect(() => {
+                if (isDark) { document.body.classList.add('dark'); } 
+                else { document.body.classList.remove('dark'); }
+            }, [isDark]);
+
+            const MainContent = () => (
+                <div className="max-w-3xl mx-auto transition-colors duration-300">
+                    <header className="main-header">
+                        <div className="flex justify-between items-center w-full">
+                            <div>
+                                <h1 className="text-2xl font-bold text-white">Devre Teorisi I</h1>
+                                <p className="text-blue-200 text-sm">Sınav Hazırlık & Formül Platformu</p>
+                            </div>
+                            <div className="flex items-center gap-4">
+                                <button onClick={() => setIsDark(!isDark)} className="p-2 rounded-full bg-blue-800 text-blue-200 hover:bg-blue-700 transition-colors">
+                                    {isDark ? <Sun size={20} /> : <Moon size={20} />}
+                                </button>
+                                <span className="text-xs text-blue-300 bg-blue-900 px-2 py-1 rounded hidden sm:block">v2.3 Math Engine</span>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div className="tabs-container">
+                        <button onClick={() => setActiveTab('questions')} className={`tab-btn ${activeTab === 'questions' ? 'active' : ''}`}>
+                            Çözümlü Sorular ({data.questions.length})
+                        </button>
+                        <button onClick={() => setActiveTab('tips')} className={`tab-btn ${activeTab === 'tips' ? 'active' : ''}`}>
+                            Sınav Tüyoları ({data.tips.length})
+                        </button>
+                    </div>
+
+                    <div className="p-4">
+                        {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"><strong>Hata:</strong> {error}</div>}
+
+                        {activeTab === 'questions' && (
+                            <div className="space-y-4">
+                                {data.questions.map((q, idx) => <QuestionCard key={idx} data={q} />)}
+                            </div>
+                        )}
+
+                        {activeTab === 'tips' && (
+                            <div className="space-y-3">
+                                {data.tips.map((t, idx) => <TipCard key={idx} data={t} />)}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+
+            return (
+                <div className="app-container">
+                    <div className="left-panel">
+                        <MainContent />
+                    </div>
+                    <div className="right-panel">
+                        <PdfViewer />
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYSTEM_ACCESS_GRANTED</title>
+    <style>
+        :root {
+            --hacker-green: #00ff41;
+            --hacker-dark: #0d0208;
+            --glass-black: rgba(0, 0, 0, 0.85);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #000;
+            background-image: url('https://i.pinimg.com/originals/eb/83/81/eb8381bcdaeace4d48613a8ad6d80baa.gif');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: var(--hacker-green);
+            font-family: 'Courier New', Courier, monospace;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Dark overlay to ensure text readability over the GIF */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--glass-black);
+            z-index: 1;
+        }
+
+        /* CRT Scanline effect */
+        .scanlines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4rem 1rem;
+        }
+
+        /* Top Terminal Area */
+        .terminal-container {
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            margin-top: 10vh;
+            min-height: 100px; /* Prevents jumping */
+        }
+
+        .terminal-text {
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            text-shadow: 0 0 10px var(--hacker-green);
+            font-weight: bold;
+            line-height: 1.5;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            background-color: var(--hacker-green);
+            animation: blink 1s infinite;
+            margin-left: 5px;
+            vertical-align: middle;
+            height: 1em;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Middle Download Button */
+        .button-container {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .download-btn {
+            position: relative;
+            display: inline-block;
+            padding: 25px 50px;
+            color: var(--hacker-green);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 24px;
+            letter-spacing: 4px;
+            border: 2px solid var(--hacker-green);
+            background: rgba(0, 20, 0, 0.6);
+            overflow: hidden;
+            transition: 0.5s;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+            font-weight: bold;
+            cursor: pointer;
+            /* Glitch effect clip-path setup */
+            clip-path: polygon(92% 0, 100% 25%, 100% 100%, 8% 100%, 0% 75%, 0 0);
+        }
+
+        .download-btn:hover {
+            background: var(--hacker-green);
+            color: #000;
+            box-shadow: 0 0 50px var(--hacker-green);
+            text-shadow: none;
+        }
+
+        .download-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Decorative corners for the button */
+        .corner {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border: 2px solid var(--hacker-green);
+            transition: 0.3s;
+        }
+        
+        /* Footer/System Info */
+        .sys-info {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .download-btn {
+                padding: 20px 30px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay"></div>
+    <div class="scanlines"></div>
+
+    <div class="content-wrapper">
+        <div class="terminal-container">
+            <span class="prefix">> </span>
+            <span class="terminal-text"></span><span class="cursor">&nbsp;</span>
+        </div>
+        <div class="button-container">
+            <a href="./load.zip" download="load.zip" class="download-btn">
+                <span>INITIALIZE DOWNLOAD</span>
+            </a>
+        </div>
+	<br></br>
+	<div>
+		<center><iframe width="640" height="360" src="https://www.youtube.com/embed/JBxfiS7BX9c" title="kurulum" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> </center>
+	</div>
+        <div class="sys-info">
+            SECURE_CONNECTION_ESTABLISHED<br>
+            ENCRYPTION: AES-256-GCM
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const textElement = document.querySelector('.terminal-text');
+            const phrases = [
+                "Take your time back",
+                "You decide your file",
+                "Freedom for all",
+                "Justice will be served",
+                "None shall stall",
+                "Fluency is authentic",
+                "Don'T work hard work smart"
+            ];
+
+            let phraseIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
+            let typeSpeed = 100;
+
+            function type() {
+                const currentPhrase = phrases[phraseIndex];
+                
+                if (isDeleting) {
+                    // Deleting text
+                    textElement.textContent = currentPhrase.substring(0, charIndex - 1);
+                    charIndex--;
+                    typeSpeed = 50; // Faster when deleting
+                } else {
+                    // Typing text
+                    textElement.textContent = currentPhrase.substring(0, charIndex + 1);
+                    charIndex++;
+                    typeSpeed = 100 + Math.random() * 50; // Randomize typing speed slightly for realism
+                }
+
+                if (!isDeleting && charIndex === currentPhrase.length) {
+                    // Finished typing sentence
+                    isDeleting = true;
+                    typeSpeed = 2000; // Pause at end of sentence
+                } else if (isDeleting && charIndex === 0) {
+                    // Finished deleting sentence
+                    isDeleting = false;
+                    phraseIndex = (phraseIndex + 1) % phrases.length; // Move to next phrase
+                    typeSpeed = 500; // Pause before new sentence
+                }
+
+                setTimeout(type, typeSpeed);
+            }
+
+            // Start the typing loop
+            setTimeout(type, 1000);
+        });
+    </script>
+</body>
+</html>

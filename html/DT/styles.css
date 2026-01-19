@@ -1,0 +1,418 @@
+/* Temel Ayarlar */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f3f4f6;
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark {
+    background-color: #0f172a; /* Slate 900 */
+    color: #e2e8f0;
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Header */
+.main-header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+body.dark .main-header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    border-bottom: 1px solid #1e293b;
+}
+
+/* Tabs */
+.tabs-container {
+    position: sticky;
+    top: 0;
+    background: white;
+    display: flex;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    z-index: 10;
+    transition: background-color 0.3s;
+}
+
+body.dark .tabs-container {
+    background-color: #1e293b;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+    color: #6b7280;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+}
+
+body.dark .tab-btn {
+    color: #94a3b8;
+}
+
+.tab-btn:hover {
+    background-color: #f9fafb;
+    color: #374151;
+}
+
+body.dark .tab-btn:hover {
+    background-color: #334155;
+    color: #e2e8f0;
+}
+
+.tab-btn.active {
+    color: #2563eb;
+    border-bottom-color: #2563eb;
+    background-color: #eff6ff;
+}
+
+body.dark .tab-btn.active {
+    color: #60a5fa;
+    border-bottom-color: #60a5fa;
+    background-color: #1e3a8a;
+}
+
+/* Kart Yapısı */
+.card {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    overflow: hidden;
+    margin-bottom: 1rem;
+    transition: background-color 0.3s;
+}
+
+body.dark .card {
+    background-color: #1e293b; /* Slate 800 */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.card-header {
+    padding: 1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s;
+}
+
+.card-header:hover {
+    background-color: #f9fafb;
+}
+
+body.dark .card-header:hover {
+    background-color: #334155;
+}
+
+.card-body {
+    padding: 1rem;
+    border-top: 1px solid #e5e7eb;
+    background-color: #f8fafc;
+}
+
+body.dark .card-body {
+    background-color: #0f172a;
+    border-top-color: #334155;
+}
+
+/* Badge ve İkonlar */
+.topic-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #2563eb;
+    display: block;
+    margin-bottom: 0.2rem;
+}
+
+body.dark .topic-badge {
+    color: #60a5fa;
+}
+
+.icon-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* İçerik Kutuları */
+.original-text-box {
+    background-color: #fffbeb;
+    border-left: 3px solid #d97706;
+    padding: 0.75rem;
+    padding-left: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0 0.5rem 0.5rem 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    color: #451a03;
+    position: relative;
+}
+
+body.dark .original-text-box {
+    background-color: #451a03;
+    border-left-color: #fbbf24;
+    color: #fef3c7;
+}
+
+.label-text {
+    font-size: 0.7rem;
+    font-weight: 800;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.audio-note-box {
+    background-color: #fefce8;
+    border: 1px solid #fef08a;
+    border-radius: 0.375rem;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    color: #854d0e;
+}
+
+body.dark .audio-note-box {
+    background-color: #422006;
+    border-color: #854d0e;
+    color: #fde047;
+}
+
+.solution-box {
+    background: white;
+    padding: 1rem;
+    border-radius: 0.375rem;
+    border: 1px solid #e2e8f0;
+}
+
+body.dark .solution-box {
+    background-color: #1e293b;
+    border-color: #334155;
+}
+
+.solution-title {
+    color: #15803d;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+body.dark .solution-title {
+    color: #4ade80;
+}
+
+.solution-list li {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #4b5563;
+    margin-bottom: 0.5rem;
+}
+
+body.dark .solution-list li {
+    color: #cbd5e1;
+}
+
+.step-number {
+    font-family: monospace;
+    color: #9ca3af;
+    min-width: 20px;
+}
+
+/* Tip Kartları Renklendirme */
+.tip-card {
+    border-left: 4px solid #9ca3af;
+    padding: 1rem;
+    transition: background-color 0.3s;
+}
+
+/* Warning */
+.tip-warning { border-color: #f97316; background-color: #fff7ed; }
+.tip-warning h3 { color: #9a3412; }
+
+body.dark .tip-warning { background-color: #431407; border-color: #fb923c; }
+body.dark .tip-warning h3 { color: #fdba74; }
+body.dark .tip-warning p { color: #fed7aa; }
+
+/* Danger */
+.tip-danger { border-color: #ef4444; background-color: #fef2f2; }
+.tip-danger h3 { color: #991b1b; }
+
+body.dark .tip-danger { background-color: #450a0a; border-color: #f87171; }
+body.dark .tip-danger h3 { color: #fca5a5; }
+body.dark .tip-danger p { color: #fecaca; }
+
+/* Success */
+.tip-success { border-color: #22c55e; background-color: #f0fdf4; }
+.tip-success h3 { color: #166534; }
+
+body.dark .tip-success { background-color: #052e16; border-color: #4ade80; }
+body.dark .tip-success h3 { color: #86efac; }
+body.dark .tip-success p { color: #bbf7d0; }
+
+/* Info */
+.tip-info { border-color: #06b6d4; background-color: #ecfeff; }
+.tip-info h3 { color: #155e75; }
+
+body.dark .tip-info { background-color: #083344; border-color: #22d3ee; }
+body.dark .tip-info h3 { color: #67e8f9; }
+body.dark .tip-info p { color: #a5f3fc; }
+
+.probability-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    color: #4b5563;
+}
+
+body.dark .probability-badge {
+    background-color: #334155;
+    color: #e2e8f0;
+}
+
+/* Temel Ayarlar - Existing styles remain, adding Layout Specifics */
+
+/* ... (Keep your existing body, .fade-in, etc. styles here) ... */
+
+/* --- NEW LAYOUT SYSTEM --- */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100%;
+}
+
+.left-panel {
+    width: 100%;
+    flex: 1;
+    overflow-y: auto;
+    /* Ensure the existing design looks good inside the panel */
+    padding-bottom: 2rem; 
+}
+
+/* Initially hide right panel on mobile/narrow screens */
+.right-panel {
+    display: none; 
+}
+
+/* 16:9 and Wide Screen Logic */
+@media (min-width: 1024px) and (min-aspect-ratio: 16/9) {
+    .app-container {
+        flex-direction: row;
+        overflow: hidden; /* Prevent body scroll, handle per-panel */
+    }
+
+    .left-panel {
+        width: 50%;
+        min-width: 500px;
+        border-right: 1px solid #e2e8f0;
+        height: 100vh;
+        overflow-y: auto;
+    }
+
+    body.dark .left-panel {
+        border-right-color: #334155;
+    }
+
+    .right-panel {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+        height: 100vh;
+        background-color: #525659; /* Standard PDF Viewer Dark Grey */
+    }
+}
+
+/* --- PDF VIEWER STYLES --- */
+.pdf-toolbar {
+    background-color: #333;
+    color: white;
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 20;
+}
+
+.pdf-controls {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.pdf-btn {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: background 0.2s;
+}
+
+.pdf-btn:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.pdf-btn.active {
+    background: #2563eb;
+}
+
+.pdf-content {
+    flex: 1;
+    overflow: auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.canvas-wrapper {
+    position: relative;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+}
+
+/* The PDF rendering layer */
+.pdf-canvas {
+    display: block;
+    background-color: white;
+}
+
+/* The Drawing Layer sitting exactly on top */
+.drawing-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: crosshair;
+    touch-action: none;
+}

@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Pro: Kapsamlı Çalışma Seti</title>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#0f172a',
+                        darkcard: '#1e293b',
+                        darktext: '#e2e8f0',
+                        accent: '#6366f1', // Indigo
+                        accentHover: '#4f46e5'
+                    },
+                    animation: {
+                        'bounce-slow': 'bounce 3s infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-darkbg text-slate-800 dark:text-darktext h-screen overflow-hidden transition-colors duration-300 selection:bg-accent selection:text-white">
+
+    <div id="root" class="h-full"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        // --- VERİ HAVUZU (Haftalık & Detaylı Notlar) ---
+        const weeksData = [
+            {
+                id: 9,
+                title: "9. Hafta: Küresel Güç Çatışması",
+                topic: "Bölgesel Güçler ve Müdahale Stratejileri",
+                icon: "fa-earth-americas",
+                content: [
+                    {
+                        subTitle: "Bölgesel Güç Nedir?",
+                        text: [
+                            "Coğrafi olarak belirli bir bölgede, komşu devletlerin siyasi, ekonomik ve güvenlik kararları üzerinde **belirleyici ve dönüştürücü** etkiye sahip ülkelerdir.",
+                            "**Örnekler:** Türkiye, Brezilya, İran, Hindistan, Suudi Arabistan."
+                        ]
+                    },
+                    {
+                        subTitle: "Statü Belirleyen Kriterler",
+                        text: [
+                            "1. **Askeri Kapasite**",
+                            "2. **Ekonomik Kapasite**",
+                            "3. **Diplomatik Kapasite**"
+                        ]
+                    },
+                    {
+                        subTitle: "Bölgesel Sorunların Kaynakları",
+                        text: [
+                            "**Sömürgeci Miras:** Yapay sınırlar, düşman grupların aynı sınırlar içinde bırakılması.",
+                            "**Kaynaklar:** Kritik kaynaklar (su, petrol vb.) üzerinde anlaşmazlıklar.",
+                            "**Milliyetçilik:** Etnik ve Dini milliyetçilik akımları."
+                        ]
+                    },
+                    {
+                        subTitle: "Küresel Güçlerin Müdahale Biçimleri",
+                        text: [
+                            "🇺🇸 **ABD (Amerika):** Askeri varlık, mali ve askeri destek, diplomatik baskı ve yaptırımlar.",
+                            "🇷🇺 **Rusya:** Enerji bağımlılığı yaratmak, askeri destek ve doğrudan müdahale, vekil grupları (proxy) desteklemek.",
+                            "🇨🇳 **Çin:** Altyapı diplomasisi, enerji anlaşmaları, BM ve uluslararası forumlar."
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 11,
+                title: "11. Hafta: Ortadoğu'nun Şekillenmesi",
+                topic: "Osmanlı Çöküşü, Mandalar ve İsrail",
+                icon: "fa-scroll",
+                content: [
+                    {
+                        subTitle: "Osmanlı'nın Çöküşü ve Boşluk",
+                        text: [
+                            "Osmanlı bölgeden çekilince oluşan siyasi boşluğu **İngiltere ve Fransa** kendi emperyal çıkarları doğrultusunda doldurdu."
+                        ]
+                    },
+                    {
+                        subTitle: "Sykes - Picot (1916)",
+                        text: [
+                            "**İmzacı:** İngiliz Sir Mark Sykes & Fransız François Georges-Picot.",
+                            "**Nitelik:** Ortadoğu topraklarını paylaşan **gizli** anlaşmadır."
+                        ]
+                    },
+                    {
+                        subTitle: "Manda Yönetimleri",
+                        text: [
+                            "🇫🇷 **Fransa Mandası:** Suriye, Lübnan.",
+                            "🇬🇧 **İngiltere Mandası:** Irak, Ürdün, Filistin."
+                        ]
+                    },
+                    {
+                        subTitle: "Bölgesel Kırılma Noktaları",
+                        text: [
+                            "**İsrail (1948):** Kuruluş sonrası Arap-İsrail savaşları (1948, 1956, 1967, 1973). Soğuk Savaş'ta ABD İsrail'i, SSCB Arap rejimlerini (Mısır, Suriye) destekledi.",
+                            "**İran İslam Devrimi (1979):** Şii ideolojisinin yükselişi. Bölgede **İran (Şii)** ve **Suudi Arabistan (Sünni)** rekabeti başladı."
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 12,
+                title: "12. Hafta: Doğu Akdeniz & Afrika",
+                topic: "Jeopolitik, Arap Baharı ve Enerji",
+                icon: "fa-water",
+                content: [
+                    {
+                        subTitle: "Afrika ve Sömürgecilik Etkileri",
+                        text: [
+                            "**Siyasi:** Yerel kurumlar zayıflatıldı, merkezi otorite yabancıların eline geçti.",
+                            "**Ekonomik:** Kaynaklar Batı'ya aktı, bölge fakirleşti.",
+                            "**Sosyal:** Etnik ve kabile ayrımları derinleşti."
+                        ]
+                    },
+                    {
+                        subTitle: "Arap Baharı (2010)",
+                        text: [
+                            "**Başlangıç:** Tunus.",
+                            "**Sonuçlar:** Tunus ve Mısır'da rejim değişti (düzen çökmedi). Libya ve Suriye'de **devlet çöktü**, iç savaş çıktı."
+                        ]
+                    },
+                    {
+                        subTitle: "Doğu Akdeniz Enerji Jeopolitiği",
+                        text: [
+                            "**Önem:** Süveyş Kanalı, Petrol Boru Hatları, Ticaret Yolları.",
+                            "**Doğalgaz Sahaları:**",
+                            "• **Zohr:** 850 milyar m³",
+                            "• **Leviathan:** 620 milyar m³",
+                            "• **Afrodit:** 130 milyar m³",
+                            "**Aktörler:** AB (Enerji arz güvenliği), Fransa (Siyasi destek/Askeri varlık), ABD (Enerji şirketleri/Stratejik ortaklık)."
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 13,
+                title: "13. Hafta: Balkanlar ve Çatışmalar",
+                topic: "Yugoslavya Savaşları ve Krizler",
+                icon: "fa-person-military-rifle",
+                content: [
+                    {
+                        subTitle: "Genel Durum",
+                        text: [
+                            "**Balkan Savaşları (1912-13):** Osmanlı Avrupa topraklarını kaybetti. Statüko askeri güçle değişti.",
+                            "**Yugoslavya (Tito Dönemi 1945-80):** Bölge bir arada tutuldu. Ölümü sonrası milliyetçilik yükseldi."
+                        ]
+                    },
+                    {
+                        subTitle: "Savaşlar ve Krizler",
+                        text: [
+                            "**Hırvatistan Bağımsızlık Savaşı (1991-95):** Hırvatlar vs Sırplar.",
+                            "**Bosna Savaşı (1992-95):** Sırp, Hırvat ve Boşnaklar arası. **Srebrenitsa Soykırımı** yaşandı.",
+                            "**Dayton Anlaşması (1995):** Askeri çatışmayı durdurdu ancak **siyasi çözümsüzlük** getirdi.",
+                            "**Kosova Krizi (1998-99):** NATO onayı olmadan 1999 hava harekatı düzenlendi."
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 14,
+                title: "14. Hafta: Karadeniz Jeopolitiği",
+                topic: "Montrö, Kırım ve Denge Politikası",
+                icon: "fa-anchor",
+                content: [
+                    {
+                        subTitle: "Karadeniz'in Önemi",
+                        text: [
+                            "Avrupa, Asya ve Rusya'nın Akdeniz'e ve küresel deniz ticaretine açılan hayati kapısıdır."
+                        ]
+                    },
+                    {
+                        subTitle: "Montrö (1936) ve Günümüz",
+                        text: [
+                            "**Montrö Boğazlar Sözleşmesi:** Türkiye'ye boğazlar üzerinde **tam egemenlik** ve bölgede **denge politikası** sağlar.",
+                            "**Kırım'ın İlhakı (2014):** Rusya'nın hamlesi bölgedeki askeri dengeyi sarsmıştır."
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        // --- GENİŞLETİLMİŞ SORU HAVUZU ---
+        const questionsPool = [
+            // --- 9. HAFTA (KÜRESEL GÜÇLER) ---
+            { weekId: 9, question: "Aşağıdakilerden hangisi 'Bölgesel Güç' tanımında vurgulanan temel özelliktir?", options: ["Sadece ekonomik olarak en güçlü ülke olması", "Komşu devletlerin kararları üzerinde dönüştürücü etkiye sahip olması", "Birleşmiş Milletler daimi üyesi olması", "Nükleer silaha sahip olması"], answer: 1 },
+            { weekId: 9, question: "Bölgesel güç statüsünü belirleyen temel kapasitelerden biri değildir?", options: ["Askeri Kapasite", "Nüfus Yoğunluğu", "Ekonomik Kapasite", "Diplomatik Kapasite"], answer: 1 },
+            { weekId: 9, question: "Notlara göre aşağıdakilerden hangisi bir 'Bölgesel Güç' örneğidir?", options: ["Arjantin", "Brezilya", "Portekiz", "Vietnam"], answer: 1 },
+            { weekId: 9, question: "Bölgesel problemlerin kaynaklarından 'Sömürgeci Miras' ne anlama gelir?", options: ["Yapay sınırlar ve düşman grupların bir arada bırakılması", "İklim krizi", "Teknolojik gerilik", "Nüfus artışı"], answer: 0 },
+            { weekId: 9, question: "Çin'in küresel müdahale biçimi hangisi ile tanımlanır?", options: ["Vekil grupları desteklemek", "Doğrudan askeri müdahale", "Altyapı diplomasisi ve Enerji anlaşmaları", "Yaptırımlar"], answer: 2 },
+            { weekId: 9, question: "Rusya'nın diğer devletler üzerinde baskı kurmak için kullandığı en belirgin ekonomik araç nedir?", options: ["Tarım ihracatı", "Enerji bağımlılığı yaratmak", "Teknoloji transferi", "Turizm gelirleri"], answer: 1 },
+            { weekId: 9, question: "Amerika Birleşik Devletleri'nin (ABD) müdahale biçimleri arasında hangisi yer almaz?", options: ["Askeri varlık bulundurma", "Diplomatik baskı ve yaptırımlar", "Mali ve askeri destek", "Altyapı diplomasisi (Çin'in aksine)"], answer: 3 },
+            { weekId: 9, question: "Etnik ve Dini Milliyetçilik, bölgesel problemlerin hangi kategorisinde değerlendirilir?", options: ["Problemlerin Kaynakları", "Çözüm Yolları", "Ekonomik Fırsatlar", "Askeri İttifaklar"], answer: 0 },
+
+            // --- 11. HAFTA (ORTADOĞU & MANDALAR) ---
+            { weekId: 11, question: "Osmanlı'nın bölgeden çekilmesiyle oluşan siyasi boşluğu hangi iki devlet doldurmuştur?", options: ["ABD ve SSCB", "Almanya ve İtalya", "İngiltere ve Fransa", "Rusya ve Avusturya"], answer: 2 },
+            { weekId: 11, question: "1916 Sykes-Picot Anlaşması'nın en belirgin özelliği nedir?", options: ["Açık bir ticaret anlaşmasıdır", "İngiltere ve Fransa arasında gizli bir paylaşım anlaşmasıdır", "İsrail devletini resmen kurmuştur", "Osmanlı ile imzalanmıştır"], answer: 1 },
+            { weekId: 11, question: "Aşağıdaki Manda Yönetimi eşleştirmelerinden hangisi doğrudur?", options: ["Fransa -> Irak", "İngiltere -> Suriye", "Fransa -> Lübnan", "İngiltere -> Lübnan"], answer: 2 },
+            { weekId: 11, question: "İngiltere'nin manda yönetimi kurduğu bölgeler hangileridir?", options: ["Suriye ve Lübnan", "Irak, Ürdün ve Filistin", "Mısır ve Libya", "İran ve Türkiye"], answer: 1 },
+            { weekId: 11, question: "İsrail Devleti hangi yıl kurulmuştur?", options: ["1916", "1923", "1948", "1967"], answer: 2 },
+            { weekId: 11, question: "Soğuk Savaş döneminde Arap-İsrail savaşlarında SSCB (Sovyetler) hangi tarafı desteklemiştir?", options: ["İsrail", "Arap Rejimlerini (Mısır, Suriye)", "Sadece Türkiye'yi", "Tarafsız kalmıştır"], answer: 1 },
+            { weekId: 11, question: "1979 İran İslam Devrimi sonrası bölgedeki ana eksen kayması nasıl olmuştur?", options: ["Türkiye - Yunanistan gerilimi", "İran (Şii) - S.Arabistan (Sünni) rekabeti", "Mısır - Suriye birleşmesi", "Irak'ın süper güç olması"], answer: 1 },
+            { weekId: 11, question: "İran İslam Devrimi hangi ideolojiyi devlet politikası haline getirmiştir?", options: ["Sünni İslam", "Şii İdeolojisi", "Seküler Milliyetçilik", "Komünizm"], answer: 1 },
+
+            // --- 12. HAFTA (DOĞU AKDENİZ & AFRİKA) ---
+            { weekId: 12, question: "Sömürgeciliğin Afrika üzerindeki 'Ekonomik' etkisi en iyi nasıl açıklanır?", options: ["Bölge sanayileşmiştir", "Kaynaklar Batı'ya aktarılmış, bölge fakirleşmiştir", "Yerel para birimleri değer kazanmıştır", "Eşit gelir dağılımı sağlanmıştır"], answer: 1 },
+            { weekId: 12, question: "Manda yönetimlerinin 'Siyasi' etkisi nedir?", options: ["Yerel kurumlar zayıflatılmış, otorite yabancıların eline geçmiştir", "Demokrasi tam olarak yerleşmiştir", "Sınırlar kaldırılmıştır", "Askeri darbeler engellenmiştir"], answer: 0 },
+            { weekId: 12, question: "Arap Baharı (2010) hangi ülkede başlamıştır?", options: ["Mısır", "Suriye", "Tunus", "Libya"], answer: 2 },
+            { weekId: 12, question: "Arap Baharı sürecinde hangi ülkelerde 'devlet tamamen çökerek' iç savaş başlamıştır?", options: ["Tunus ve Mısır", "Fas ve Cezayir", "Libya ve Suriye", "Katar ve Bahreyn"], answer: 2 },
+            { weekId: 12, question: "Doğu Akdeniz'deki 'Leviathan' gaz sahasının tahmini rezervi ne kadardır?", options: ["130 milyar m³", "620 milyar m³", "850 milyar m³", "1 trilyon m³"], answer: 1 },
+            { weekId: 12, question: "Mısır açıklarındaki en büyük doğalgaz sahası hangisidir (850 milyar m³)?", options: ["Afrodit", "Leviathan", "Zohr", "Tamar"], answer: 2 },
+            { weekId: 12, question: "Avrupa Birliği'nin (AB) Doğu Akdeniz'deki temel motivasyonu nedir?", options: ["Enerji arz güvenliği ve çeşitlendirme", "Bölgeyi işgal etmek", "Süveyş Kanalı'nı kapatmak", "Rusya ile işbirliği yapmak"], answer: 0 },
+            { weekId: 12, question: "ABD'nin Doğu Akdeniz'deki varlık sebeplerinden biri hangisidir?", options: ["Bölgeden tamamen çekilmek", "Enerji şirketleri ve stratejik ortaklık", "Sadece turizm", "Mülteci akınını yönetmek"], answer: 1 },
+
+            // --- 13. HAFTA (BALKANLAR) ---
+            { weekId: 13, question: "Balkan Savaşları'nın (1912-1913) modern diplomasi tarihindeki önemi nedir?", options: ["Barışçıl çözümün ilk örneğidir", "Bölgesel güçlerin doğrudan müdahalesi olmadan statünün askeri güçle değiştirilebileceğini göstermiştir", "Osmanlı'nın toprak kazandığı son savaştır", "ABD'nin ilk müdahalesidir"], answer: 1 },
+            { weekId: 13, question: "Yugoslavya'yı 1945-1980 yılları arasında bir arada tutan lider kimdir?", options: ["Slobodan Miloseviç", "Aliya İzzetbegoviç", "Josip Broz Tito", "Franjo Tudjman"], answer: 2 },
+            { weekId: 13, question: "Bosna Savaşı'nda (1992-1995) gerçekleşen büyük trajedi hangisidir?", options: ["Holokost", "Srebrenitsa Soykırımı", "Hocalı Katliamı", "Ruanda Soykırımı"], answer: 1 },
+            { weekId: 13, question: "Dayton Anlaşması'nın (1995) sonucu en iyi nasıl özetlenir?", options: ["Tam siyasi çözüm ve barış", "Askeri çatışmanın bitişi ama siyasi çözümsüzlük", "Yugoslavya'nın yeniden birleşmesi", "Sırbistan'ın zaferi"], answer: 1 },
+            { weekId: 13, question: "1999 Kosova Krizi'nde NATO müdahalesinin ayırt edici özelliği nedir?", options: ["BM Güvenlik Konseyi onayı olmadan hava harekatı yapılması", "Sadece karadan müdahale edilmesi", "Rusya ile ortak yapılması", "Sırbistan'ın daveti üzerine yapılması"], answer: 0 },
+            { weekId: 13, question: "Hırvatistan Bağımsızlık Savaşı (1991-1995) temel olarak kimler arasında geçmiştir?", options: ["Hırvatlar ve Boşnaklar", "Hırvatlar ve Sırplar", "Sırplar ve Arnavutlar", "Yunanlılar ve Makedonlar"], answer: 1 },
+            
+            // --- 14. HAFTA (KARADENİZ) ---
+            { weekId: 14, question: "Karadeniz'in jeopolitik önemi nedir?", options: ["Sadece balıkçılık kaynağıdır", "Avrupa, Asya ve Rusya'nın Akdeniz'e açılan kapısıdır", "Petrol rezervi yoktur", "Kapalı bir göldür"], answer: 1 },
+            { weekId: 14, question: "1936 Montrö Boğazlar Sözleşmesi Türkiye'ye ne sağlamıştır?", options: ["Sadece ticaret hakkı", "Boğazlar üzerinde tam egemenlik", "Kırım üzerinde hak", "Akdeniz'de sondaj hakkı"], answer: 1 },
+            { weekId: 14, question: "Montrö Sözleşmesi'nin Karadeniz güvenliği açısından temel işlevi nedir?", options: ["Ticaret gemilerini engellemek", "Denge politikası ve askeri dengeyi korumak", "NATO gemilerine sınırsız geçiş vermek", "Rusya'ya boğazları kapatmak"], answer: 1 },
+            { weekId: 14, question: "Karadeniz'deki askeri dengeyi 2014 yılında sarsan olay nedir?", options: ["Gürcistan Savaşı", "Kırım'ın Rusya tarafından ilhakı", "Montrö'nün iptali", "Ukrayna'nın NATO üyeliği"], answer: 1 },
+            { weekId: 14, question: "Montrö Sözleşmesi'ne göre Türkiye savaş durumunda ne yapabilir?", options: ["Hiçbir şey yapamaz", "Sadece ticaret gemilerini engeller", "Savaşan devletlerin savaş gemilerine boğazları kapatabilir", "Tüm geçişleri serbest bırakır"], answer: 2 }
+        ];
+
+        // --- BİLEŞENLER ---
+
+        const WeekCard = ({ week, onClick, type }) => (
+            <div 
+                onClick={() => onClick(week)}
+                className="bg-white dark:bg-darkcard border border-slate-200 dark:border-slate-700 rounded-xl p-5 cursor-pointer hover:shadow-lg hover:border-accent dark:hover:border-accent transition-all group relative overflow-hidden"
+            >
+                <div className="absolute top-0 right-0 w-16 h-16 bg-accent/5 rounded-bl-full -mr-4 -mt-4 transition-all group-hover:scale-110"></div>
+                <div className="flex items-center justify-between mb-3 relative z-10">
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md">{week.title.split(':')[0]}</span>
+                    <i className={`fa-solid ${week.icon} text-slate-300 dark:text-slate-600 group-hover:text-accent transition-colors text-xl`}></i>
+                </div>
+                <h3 className="font-bold text-lg text-slate-800 dark:text-white mb-2 group-hover:text-accent transition-colors leading-tight relative z-10">{week.title.split(':')[1]}</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 relative z-10">{week.topic}</p>
+                <div className="mt-4 flex items-center text-xs font-bold text-accent relative z-10">
+                    {type === 'notes' ? (
+                        <span className="flex items-center"><i className="fa-solid fa-book-open mr-2"></i>Notları İncele</span>
+                    ) : (
+                        <span className="flex items-center bg-accent/10 px-3 py-1.5 rounded-full group-hover:bg-accent group-hover:text-white transition-all"><i className="fa-solid fa-play mr-2"></i>Testi Başlat</span>
+                    )}
+                </div>
+            </div>
+        );
+
+        const NoteDetail = ({ week, onBack }) => (
+            <div className="fade-in max-w-4xl mx-auto pb-20 p-4 sm:p-6">
+                <button onClick={onBack} className="mb-6 flex items-center text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white transition-colors group">
+                    <i className="fa-solid fa-arrow-left mr-2 group-hover:-translate-x-1 transition-transform"></i> Geri Dön
+                </button>
+                
+                <div className="bg-white dark:bg-darkcard rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+                    <div className="bg-gradient-to-r from-indigo-600 to-violet-600 p-8 text-white relative overflow-hidden">
+                        <i className={`fa-solid ${week.icon} absolute -right-6 -bottom-6 text-9xl opacity-10 rotate-12`}></i>
+                        <div className="flex items-center gap-3 mb-3 opacity-90">
+                            <span className="uppercase tracking-wide text-xs font-bold bg-white/20 px-2 py-1 rounded backdrop-blur-sm">{week.title.split(':')[0]}</span>
+                        </div>
+                        <h1 className="text-2xl sm:text-3xl font-bold relative z-10">{week.title.split(':')[1]}</h1>
+                        <p className="mt-2 text-indigo-100 relative z-10">{week.topic}</p>
+                    </div>
+                    
+                    <div className="p-6 sm:p-8 space-y-8">
+                        {week.content.map((section, idx) => (
+                            <div key={idx} className="border-b border-slate-100 dark:border-slate-700 pb-8 last:border-0 last:pb-0">
+                                <h3 className="text-lg sm:text-xl font-bold text-slate-800 dark:text-white mb-4 flex items-center">
+                                    <span className="w-1.5 h-6 bg-accent rounded-full mr-3"></span>
+                                    {section.subTitle}
+                                </h3>
+                                <div className="space-y-4 pl-4 sm:pl-5">
+                                    {section.text.map((line, i) => {
+                                        const parts = line.split("**");
+                                        return (
+                                            <p key={i} className="text-slate-600 dark:text-slate-300 leading-relaxed text-sm sm:text-base">
+                                                {parts.map((part, k) => 
+                                                    k % 2 === 1 ? <strong key={k} className="text-slate-900 dark:text-white font-bold bg-yellow-100 dark:bg-yellow-500/20 px-1 rounded mx-0.5">{part}</strong> : part
+                                                )}
+                                            </p>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        );
+
+        const QuizRunner = ({ week, questions, onFinish, onBack }) => {
+            const [currentIndex, setCurrentIndex] = useState(0);
+            const [userAnswers, setUserAnswers] = useState([]);
+            const [selectedOption, setSelectedOption] = useState(null); // Anlık seçim efekti için
+            
+            const handleAnswer = (idx) => {
+                if(selectedOption !== null) return; // Çift tıklamayı önle
+                setSelectedOption(idx);
+                
+                setTimeout(() => {
+                    const newAns = [...userAnswers, idx];
+                    setUserAnswers(newAns);
+                    setSelectedOption(null);
+                    
+                    if (currentIndex < questions.length - 1) {
+                        setCurrentIndex(currentIndex + 1);
+                    } else {
+                        onFinish(newAns, questions);
+                    }
+                }, 400); // 400ms gecikme ile geçiş
+            };
+
+            const progress = ((currentIndex) / questions.length) * 100;
+
+            return (
+                <div className="fade-in max-w-2xl mx-auto p-4 sm:p-6 h-full flex flex-col justify-center">
+                    <button onClick={onBack} className="mb-6 text-sm text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors self-start flex items-center">
+                        <i className="fa-solid fa-xmark mr-2"></i> Sınavı İptal Et
+                    </button>
+                    
+                    <div className="bg-white dark:bg-darkcard rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden relative">
+                        {/* Progress Bar */}
+                        <div className="h-1.5 bg-slate-100 dark:bg-slate-800 w-full">
+                            <div className="h-full bg-accent transition-all duration-500 ease-out" style={{width: `${((currentIndex + 1) / questions.length) * 100}%`}}></div>
+                        </div>
+
+                        <div className="p-6 sm:p-10">
+                            <div className="flex justify-between items-center mb-8">
+                                <span className="text-xs font-bold text-accent bg-indigo-50 dark:bg-indigo-500/10 px-3 py-1.5 rounded-full uppercase tracking-wider">
+                                    {week.title.length > 30 ? week.title.substring(0,30)+'...' : week.title}
+                                </span>
+                                <span className="text-slate-400 font-mono text-sm">{currentIndex + 1} / {questions.length}</span>
+                            </div>
+                            
+                            <h2 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white mb-8 leading-snug">
+                                {questions[currentIndex].question}
+                            </h2>
+
+                            <div className="space-y-3">
+                                {questions[currentIndex].options.map((opt, idx) => {
+                                    let btnClass = "w-full text-left p-4 sm:p-5 rounded-2xl border-2 transition-all flex items-center group relative overflow-hidden ";
+                                    if (selectedOption === idx) {
+                                        btnClass += "border-accent bg-accent/5 text-accent dark:text-white scale-[1.02] shadow-md";
+                                    } else {
+                                        btnClass += "border-slate-100 dark:border-slate-800 hover:border-accent dark:hover:border-accent hover:bg-slate-50 dark:hover:bg-slate-800/50 text-slate-600 dark:text-slate-300";
+                                    }
+
+                                    return (
+                                        <button 
+                                            key={idx}
+                                            onClick={() => handleAnswer(idx)}
+                                            className={btnClass}
+                                        >
+                                            <span className={`w-8 h-8 rounded-lg flex items-center justify-center mr-4 text-sm font-bold transition-colors ${selectedOption === idx ? 'bg-accent text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 group-hover:bg-accent group-hover:text-white'}`}>
+                                                {['A','B','C','D'][idx]}
+                                            </span>
+                                            <span className="font-medium">{opt}</span>
+                                        </button>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const Analysis = ({ results, onHome, onRetry }) => {
+            const { answers, questions } = results;
+            const score = answers.filter((ans, i) => ans === questions[i].answer).length;
+            const percentage = Math.round((score / questions.length) * 100);
+            
+            let message = "";
+            let colorClass = "";
+            
+            if(percentage >= 90) { message = "Mükemmel!"; colorClass = "text-green-500"; }
+            else if(percentage >= 70) { message = "Gayet İyi!"; colorClass = "text-blue-500"; }
+            else if(percentage >= 50) { message = "Fena Değil"; colorClass = "text-yellow-500"; }
+            else { message = "Tekrar Etmelisin"; colorClass = "text-red-500"; }
+
+            return (
+                <div className="max-w-3xl mx-auto p-4 sm:p-6 fade-in pb-20">
+                    <div className="bg-white dark:bg-darkcard rounded-3xl shadow-xl p-8 mb-8 text-center border border-slate-200 dark:border-slate-700 relative overflow-hidden">
+                        <div className={`absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-${colorClass.split('-')[1]}-500 to-transparent opacity-50`}></div>
+                        
+                        <h2 className="text-lg text-slate-500 dark:text-slate-400 mb-2 font-medium">Sınav Sonucu</h2>
+                        <div className={`text-6xl font-black mb-2 ${colorClass} tracking-tight`}>%{percentage}</div>
+                        <p className="text-2xl font-bold text-slate-800 dark:text-white mb-2">{message}</p>
+                        <p className="text-slate-500 dark:text-slate-400">{questions.length} soruda {score} doğru</p>
+                        
+                        <div className="flex justify-center gap-4 mt-8">
+                             <button onClick={onHome} className="px-6 py-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-white rounded-xl font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                                <i className="fa-solid fa-house mr-2"></i> Ana Menü
+                            </button>
+                            <button onClick={onRetry} className="px-6 py-3 bg-accent text-white rounded-xl font-bold hover:bg-accentHover shadow-lg shadow-indigo-500/30 transition-all hover:-translate-y-1">
+                                <i className="fa-solid fa-rotate-right mr-2"></i> Tekrar Çöz
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-slate-500 dark:text-slate-400 font-bold uppercase text-xs tracking-wider ml-2">Yanlış Cevaplar & Analiz</h3>
+                        {score === questions.length ? (
+                             <div className="text-center py-12 bg-white dark:bg-darkcard rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
+                                <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4 text-green-500 text-3xl animate-bounce-slow">
+                                    <i className="fa-solid fa-trophy"></i>
+                                </div>
+                                <h4 className="text-xl font-bold text-slate-800 dark:text-white">Tebrikler!</h4>
+                                <p className="text-slate-500 dark:text-slate-400">Hiç yanlışın yok, konuya hakimsin.</p>
+                             </div>
+                        ) : (
+                            questions.map((q, idx) => {
+                                const isCorrect = answers[idx] === q.answer;
+                                if (isCorrect) return null;
+                                return (
+                                    <div key={idx} className="bg-white dark:bg-darkcard rounded-xl border-l-4 border-red-500 p-6 shadow-sm group hover:shadow-md transition-shadow">
+                                        <div className="flex gap-4">
+                                            <span className="text-red-500 font-bold text-lg pt-0.5"><i className="fa-solid fa-xmark"></i></span>
+                                            <div className="flex-1">
+                                                <p className="font-bold text-slate-800 dark:text-white mb-4 text-lg">{q.question}</p>
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                                                    <div className="bg-red-50 dark:bg-red-900/10 p-4 rounded-lg border border-red-100 dark:border-red-900/30">
+                                                        <span className="font-bold block text-xs uppercase text-red-600 dark:text-red-400 mb-1">Senin Cevabın</span>
+                                                        <span className="text-red-900 dark:text-red-100 font-medium">{q.options[answers[idx]]}</span>
+                                                    </div>
+                                                    <div className="bg-green-50 dark:bg-green-900/10 p-4 rounded-lg border border-green-100 dark:border-green-900/30">
+                                                        <span className="font-bold block text-xs uppercase text-green-600 dark:text-green-400 mb-1">Doğru Cevap</span>
+                                                        <span className="text-green-900 dark:text-green-100 font-medium">{q.options[q.answer]}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [darkMode, setDarkMode] = useState(true);
+            const [view, setView] = useState('home'); // home, reading, taking-quiz, analysis
+            const [activeWeek, setActiveWeek] = useState(null);
+            const [quizResults, setQuizResults] = useState(null);
+
+            // Dark mode init
+            useEffect(() => {
+                if (darkMode) document.documentElement.classList.add('dark');
+                else document.documentElement.classList.remove('dark');
+            }, [darkMode]);
+
+            // Handlers
+            const openNote = (week) => { 
+                window.scrollTo(0,0);
+                setActiveWeek(week); 
+                setView('reading'); 
+            }
+
+            const startQuiz = (week, isGeneral = false) => { 
+                window.scrollTo(0,0);
+                if(isGeneral) {
+                    // Randomize from all questions
+                    const shuffled = [...questionsPool].sort(() => 0.5 - Math.random());
+                    // Create a dummy week object for the general quiz
+                    const generalWeek = { 
+                        id: 'general', 
+                        title: "Genel Deneme Sınavı", 
+                        questions: shuffled.slice(0, 20) // 20 Soruluk Deneme
+                    };
+                    setActiveWeek(generalWeek);
+                } else {
+                    // Filter specifically for that week
+                    const weekQs = questionsPool.filter(q => q.weekId === week.id);
+                    // Shuffle them too so order changes every time
+                    const shuffledWeekQs = [...weekQs].sort(() => 0.5 - Math.random());
+                    
+                    const quizWeek = {
+                        ...week,
+                        questions: shuffledWeekQs
+                    };
+                    setActiveWeek(quizWeek);
+                }
+                setView('taking-quiz'); 
+            }
+
+            const finishQuiz = (answers, questions) => { 
+                window.scrollTo(0,0);
+                setQuizResults({answers, questions}); 
+                setView('analysis'); 
+            }
+
+            const goHome = () => { setView('home'); setActiveWeek(null); }
+            
+            const retryQuiz = () => {
+                // Restart same quiz
+                if(activeWeek.id === 'general') {
+                     startQuiz(null, true);
+                } else {
+                     startQuiz(weeksData.find(w => w.id === activeWeek.id));
+                }
+            }
+
+            return (
+                <div className="flex flex-col h-screen max-w-7xl mx-auto w-full">
+                    {/* Header */}
+                    <header className="flex-none h-16 sm:h-20 bg-white/80 dark:bg-darkcard/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 px-4 sm:px-8 flex items-center justify-between z-20 sticky top-0">
+                        <div className="flex items-center gap-3 cursor-pointer group" onClick={goHome}>
+                            <div className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold shadow-lg shadow-indigo-500/30 group-hover:scale-105 transition-transform">
+                                <i className="fa-solid fa-graduation-cap text-lg"></i>
+                            </div>
+                            <div>
+                                <h1 className="font-bold text-slate-800 dark:text-white text-lg leading-none group-hover:text-accent transition-colors">Final Pro</h1>
+                                <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Çalışma Asistanı</span>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <button onClick={() => setDarkMode(!darkMode)} className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-yellow-400 flex items-center justify-center transition-all hover:bg-slate-200 dark:hover:bg-slate-700">
+                                <i className={`fa-solid ${darkMode ? 'fa-sun' : 'fa-moon'}`}></i>
+                            </button>
+                        </div>
+                    </header>
+
+                    {/* Content */}
+                    <main className="flex-1 overflow-y-auto relative scroll-smooth bg-slate-50 dark:bg-darkbg">
+                        
+                        {/* HOME DASHBOARD */}
+                        {view === 'home' && (
+                            <div className="p-4 sm:p-8 pb-24 fade-in">
+                                <div className="max-w-6xl mx-auto">
+                                    
+                                    {/* Hero / Welcome */}
+                                    <div className="mb-10 text-center sm:text-left sm:flex sm:items-end sm:justify-between">
+                                        <div>
+                                            <h2 className="text-3xl font-bold text-slate-800 dark:text-white mb-2">Hoş geldin!</h2>
+                                            <p className="text-slate-500 dark:text-slate-400">Bugün hangi konuya odaklanmak istersin?</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                                        {/* LEFT: NOTES (List) - Takes 5 cols */}
+                                        <div className="lg:col-span-5 space-y-4">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <h2 className="text-lg font-bold text-slate-800 dark:text-white flex items-center">
+                                                    <span className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mr-3"><i className="fa-solid fa-book-open"></i></span>
+                                                    Ders Notları
+                                                </h2>
+                                            </div>
+                                            <div className="space-y-3">
+                                                {weeksData.map(week => (
+                                                    <WeekCard key={week.id} week={week} onClick={openNote} type="notes" />
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* RIGHT: QUIZZES (List) - Takes 7 cols */}
+                                        <div className="lg:col-span-7 space-y-4">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <h2 className="text-lg font-bold text-slate-800 dark:text-white flex items-center">
+                                                    <span className="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mr-3"><i className="fa-solid fa-clipboard-check"></i></span>
+                                                    Konu Tarama Testleri
+                                                </h2>
+                                            </div>
+
+                                            {/* General Exam Card - Highlighted */}
+                                            <div onClick={() => startQuiz(null, true)} 
+                                                 className="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 cursor-pointer shadow-xl shadow-indigo-500/20 transform hover:scale-[1.01] transition-all text-white group">
+                                                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                                     <i className="fa-solid fa-brain text-9xl -mr-8 -mt-8 rotate-12"></i>
+                                                 </div>
+                                                 <div className="relative z-10 flex items-center">
+                                                     <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mr-4 text-xl">
+                                                        <i className="fa-solid fa-star"></i>
+                                                     </div>
+                                                     <div>
+                                                         <h3 className="font-bold text-xl mb-1">Genel Deneme Sınavı</h3>
+                                                         <p className="text-indigo-100 text-sm opacity-90">Tüm konulardan karma 20 soru çöz.</p>
+                                                     </div>
+                                                 </div>
+                                                 <div className="mt-4 flex justify-end">
+                                                     <span className="bg-white text-indigo-600 px-4 py-2 rounded-lg text-sm font-bold shadow-sm group-hover:shadow-md transition-all">Sınavı Başlat <i className="fa-solid fa-arrow-right ml-1"></i></span>
+                                                 </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                                {weeksData.map(week => (
+                                                    <WeekCard key={week.id} week={week} onClick={(w) => startQuiz(w, false)} type="quiz" />
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        )}
+
+                        {/* READING NOTE */}
+                        {view === 'reading' && activeWeek && (
+                            <NoteDetail week={activeWeek} onBack={goHome} />
+                        )}
+
+                        {/* TAKING QUIZ */}
+                        {view === 'taking-quiz' && activeWeek && (
+                            <QuizRunner 
+                                week={activeWeek}
+                                questions={activeWeek.questions}
+                                onFinish={finishQuiz}
+                                onBack={goHome}
+                            />
+                        )}
+
+                        {/* ANALYSIS */}
+                        {view === 'analysis' && quizResults && (
+                            <Analysis results={quizResults} onHome={goHome} onRetry={retryQuiz} />
+                        )}
+
+                    </main>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1643 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAT - Final Pro Seti</title>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        military: {
+                            50: '#f4f7f4',
+                            100: '#e3ebe3',
+                            500: '#5e7e5e',
+                            600: '#4b664b',
+                            700: '#3a4f3a',
+                            800: '#2d3d2d',
+                            900: '#1a261a',
+                        },
+                        paper: {
+                            50: '#fdfbf7',
+                            100: '#f7f3e8',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome & Google Fonts -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .quote-font { font-family: 'Merriweather', serif; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -8px rgba(0,0,0,0.15); }
+        
+        /* Dark mode scrollbar */
+        .dark ::-webkit-scrollbar-track { background: #1f2937; }
+        .dark ::-webkit-scrollbar-thumb { background: #4b5563; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased min-h-screen transition-colors duration-300 dark:bg-gray-900 dark:text-gray-100">
+    <div id="root" class="flex-grow flex flex-col"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        // --- DATA SECTION: 90 SORULUK DEV HAVUZ ---
+        
+        const courseData = [
+            {
+                id: "part1",
+                label: "Bölüm 1 (Sf. 101-122)",
+                title: "Askeri Devrim ve Osmanlı Dönüşümü",
+                description: "Erken Modern Dönem (1450-1789), Askeri Devrim, Ateşli Silahlar ve Osmanlı.",
+                notes: [
+                    "TEKNOLOJİK DETERMINİZM YANILGISI: Silah teknolojisi tek başına savaş kazandırmaz. Belirleyici olan, o silahı kullanan asker, organizasyon, doktrin ve mali yapıdır.",
+                    "ASKERİ DEVRİM (M. Roberts): 1560-1660 arası. Taktiksel yenilikler (Derin karelerden sığ hat düzenine geçiş) -> Orduların büyümesi -> Devletin vergi/bürokrasi ihtiyacı -> Modern Merkezi Devletin Doğuşu.",
+                    "OSMANLI ADAPTASYONU: Osmanlı, ateşli silahları reddetmedi (Doğu despotizmi/tutuculuk tezi yanlıştır). Aksine, 15. yüzyıldan itibaren (Macaristan seferleri) top ve tüfeği en etkin kullanan devletlerden biriydi. Sorun zihniyet değil, 17. yy sonrası mali krizdi.",
+                    "LOJİSTİK DEVRİM (MENZİL): Ordular büyüyünce 'yağma' (yerinden temin) yetersiz kaldı. Osmanlı 'Menzil Teşkilatı' ile güzergah üzerinde önceden erzak depolayan profesyonel bir ikmal sistemi kurdu.",
+                    "TRACE ITALIENNE (YILDIZ TABYALAR): Topçu ateşine dayanıksız yüksek surların yerini; alçak, kalın, eğimli ve geometrik 'Yıldız Tabyalar' aldı. Bu, kuşatmaları bir matematik ve mühendislik problemine dönüştürdü.",
+                    "PIKE AND SHOT (MIZRAK VE TÜFEK): Tüfeklerin yavaş dolduğu ve süngünün olmadığı dönemde, tüfekçileri süvariden korumak için uzun mızraklı askerler (Pikemen) kullanıldı. Süngünün icadı mızrağı bitirdi.",
+                    "DİSİPLİN VE DRİLL (TALİM): Maurice of Nassau ve Gustavus Adolphus, asker hareketlerini standartlaştırıp (Drill) senkronize ateş (Salvo) sistemini getirdi. Savaş sanattan makineleşmeye geçti.",
+                    "SOSYAL DÖNÜŞÜM: Tüfekli sıradan bir piyadenin, yıllarca eğitim almış soylu bir şövalyeyi öldürebilmesi, aristokrasinin savaş tekelini kırdı ve 'Savaşın Demokratikleşmesi'ne yol açtı.",
+                    "BARUT İMPARATORLUKLARI: Osmanlı, Safevi, Babür gibi devletler, ateşli silah tekeli sayesinde yerel feodal beyleri ezip merkezi otoritelerini kurdular.",
+                    "TIMAR'IN ÇÖKÜŞÜ: Savaş sahasında tüfekli piyadeye (Yeniçeri/Sekban) ihtiyaç artınca, kılıçlı Tımarlı Sipahilerin askeri değeri azaldı. Devlet nakit para bulmak için Tımar topraklarını iltizama çevirdi.",
+                    "KADIRGADAN KALYONA: İnebahtı (1571) kürekli gemilerin (kadırga) son büyük savaşıydı. Sonrasında okyanusa dayanıklı, bol top taşıyan yelkenli kalyonlar hakim oldu."
+                ],
+                questions: [
+                    // --- Mevcut Sorular (Şıklar karıştırıldı) ---
+                    {
+                        id: 101,
+                        type: "quote",
+                        text: "\"Teknolojiyi savaşın odak noktasına almak büyük bir hata ve abartıdır. Odak noktası her zaman o silahı kullanan asker ve operatif sanat olmalıdır.\"",
+                        question: "Yukarıdaki metin, askeri tarih yazımında sıkça düşülen hangi temel yanılgıyı eleştirmektedir?",
+                        options: ["Anakronizm", "Oryantalizm", "Teknolojik Determinizm", "Stratejik Körlük"],
+                        correct: 2,
+                        explanation: "Metin, teknolojinin tek belirleyici güç olduğu inancını (Teknolojik Determinizm) reddeder."
+                    },
+                    {
+                        id: 102,
+                        type: "standard",
+                        text: "Aşağıdakilerden hangisi Erken Modern Dönem'de 'Askeri Devrim'in doğrudan sonuçlarından biri DEĞİLDİR?",
+                        question: "Askeri Devrim'in sonucu DEĞİLDİR:",
+                        options: ["Feodal sadakat bağlarının güçlenmesi", "Orduların mevcudunun artması", "Devletin vergi kapasitesinin zorlanması", "Süvarinin mutlak hakimiyetinin bitmesi"],
+                        correct: 0,
+                        explanation: "Askeri devrim feodal bağları zayıflatmış, merkezi devleti güçlendirmiştir."
+                    },
+                    {
+                        id: 103,
+                        type: "paragraph",
+                        text: "17. yüzyıl başından itibaren Osmanlı'da düzenli birlik sayım listeleri ve lojistik kayıtlar tutulmaya başlandı. Bu işi yapan bürokratlar zamanla askerileşti.",
+                        question: "Bu yapı neyin ilkel formudur?",
+                        options: ["Yeniçeri Ocağı", "Genelkurmay Başkanlığı", "Divan-ı Hümayun", "Humbaracı Ocağı"],
+                        correct: 1,
+                        explanation: "Lojistik planlama ve kayıt tutma işlerinin askerileşmesi, modern Genelkurmay'ın çekirdeğidir."
+                    },
+                    {
+                        id: 104,
+                        type: "standard",
+                        text: "Michael Roberts'a göre askeri taktiklerdeki değişim (derin saflardan hat düzenine geçiş) nihai olarak neye yol açmıştır?",
+                        question: "Taktik değişimin siyasi sonucu:",
+                        options: ["Feodalizmin geri gelmesi", "Dinin etkisinin artması", "Ticaretin durması", "Modern bürokratik devletin doğuşu"],
+                        correct: 3,
+                        explanation: "Büyük orduları finanse etmek, vergi toplayan bürokratik devleti zorunlu kıldı."
+                    },
+                    {
+                        id: 105,
+                        type: "quote",
+                        text: "\"Osmanlılar teknolojiyi reddetmedi, ancak mali yapıları bu pahalı dönüşümü sürdürmeye yetmedi.\"",
+                        question: "Bu görüş neyi çürütür?",
+                        options: ["Gaza İdeolojisi", "Hanedan Çekişmeleri", "Kültürel Muhafazakarlık (Teknoloji Karşıtlığı)", "Coğrafi Konum"],
+                        correct: 2,
+                        explanation: "Sorunun 'gavur icadı' zihniyeti değil, ekonomi olduğunu vurgular."
+                    },
+                    // --- YENİ EKLENEN SORULAR (Part 1 - Karıştırılmış) ---
+                    {
+                        id: 106,
+                        type: "standard",
+                        text: "Topların kale surlarını yıkabilir hale gelmesiyle (1453 sonrası), Avrupa mimarisinde ortaya çıkan savunma yapısı nedir?",
+                        question: "Yüksek surların yerini alan yapı:",
+                        options: ["Donjon Kuleleri", "Hendek Sistemi", "Ahşap Surlar", "Trace Italienne (Yıldız Tabyalar)"],
+                        correct: 3,
+                        explanation: "Top güllelerini sektirmek için alçak, eğimli ve kalın duvarlı yıldız tabyalar geliştirildi."
+                    },
+                    {
+                        id: 107,
+                        type: "quote",
+                        text: "\"Para, savaşın sinirleridir.\"",
+                        question: "Erken modern dönemde bu sözün geçerliliğini en çok arttıran gelişme nedir?",
+                        options: ["Orduların daimi ve profesyonel hale gelmesi", "Askerlerin gönüllü olması", "Savaşların kısalması", "Barış dönemlerinin uzaması"],
+                        correct: 0,
+                        explanation: "Ordular artık yağma ile geçinen geçici birlikler değil, yıl boyu maaş isteyen daimi kurumlar olduğu için para hayati oldu."
+                    },
+                    {
+                        id: 108,
+                        type: "paragraph",
+                        text: "İspanyol Tercio'ları savaş alanında tüfekçileri korumak için uzun mızraklı (pike) askerleri kare formasyonunda kullanıyordu. Bu, süvari hücumlarına karşı yürüyen bir kale gibiydi.",
+                        question: "Bu taktiksel dönem literatürde nasıl adlandırılır?",
+                        options: ["Yıldırım Savaşı", "Pike and Shot (Mızrak ve Tüfek)", "Siper Savaşı", "Gerilla Savaşı"],
+                        correct: 1,
+                        explanation: "Ateşli silahların süngü icat edilene kadar süvariye karşı savunmasız olması, mızraklı asker korumasını zorunlu kılıyordu."
+                    },
+                    {
+                        id: 109,
+                        type: "standard",
+                        text: "Osmanlı ordusunun lojistik başarısının arkasındaki en önemli kurum olan ve ordunun geçeceği güzergahta erzak depolayan sistem hangisidir?",
+                        question: "Osmanlı lojistik sistemi:",
+                        options: ["Tımar", "Devşirme", "Menzil Teşkilatı", "Müsadere"],
+                        correct: 2,
+                        explanation: "Menzil teşkilatı, ordunun konaklayacağı noktalarda önceden erzak biriktirerek seferin devamlılığını sağlardı."
+                    },
+                    {
+                        id: 110,
+                        type: "standard",
+                        text: "Gustavus Adolphus'un (İsveç) askeri tarihe en büyük katkısı nedir?",
+                        question: "İsveç Kralı'nın reformu:",
+                        options: ["Topları kaldırması", "Sadece süvari kullanması", "Paralı askerliği yasaklaması", "Orduları devasa kareler yerine ince hatlar (linear) halinde dizerek ateş gücünü maksimize etmesi"],
+                        correct: 3,
+                        explanation: "Derinlemesine kalabalık saflar yerine ince hatlar (linear tactics), aynı anda ateş eden tüfek sayısını arttırmıştır."
+                    },
+                    {
+                        id: 111,
+                        type: "quote",
+                        text: "\"Barut İmparatorlukları (Gunpowder Empires) terimi genellikle Osmanlı, Safevi ve Babür devletleri için kullanılır.\"",
+                        question: "Bu terimin ima ettiği ortak özellik nedir?",
+                        options: ["Çok barut üretmeleri", "Sürekli birbirleriyle savaşmaları", "Merkezi otoritelerini ateşli silahlar sayesinde kurmaları ve korumaları", "Denizci devletler olmaları"],
+                        correct: 2,
+                        explanation: "Bu devletler, feodal beyleri ve yerel güçleri top ve tüfek tekeli sayesinde bastırıp merkezi imparatorluklar kurdular."
+                    },
+                    {
+                        id: 112,
+                        type: "paragraph",
+                        text: "Ortaçağ Avrupa için feodal kaos ve gerileme dönemi olabilir. Ancak aynı dönemde Çin'de barut icat edilmiş, İslam dünyası bilim ve askeri organizasyonda zirveye çıkmıştı.",
+                        question: "Bu paragraf neyi eleştirir?",
+                        options: ["Avrupa Merkezci (Eurocentric) Tarih Anlayışını", "Rönesans'ı", "Sanayi Devrimi'ni", "Coğrafi Keşifleri"],
+                        correct: 0,
+                        explanation: "Ortaçağ'ın tüm dünya için 'karanlık' olduğu fikri Avrupa merkezci bir yanılgıdır."
+                    },
+                    {
+                        id: 113,
+                        type: "standard",
+                        text: "Osmanlı Tımar sisteminin (atlı asker/sipahi) 17. yüzyılda bozulmasının temel askeri nedeni nedir?",
+                        question: "Tımar sisteminin çöküş nedeni:",
+                        options: ["Atların hastalanması", "Toprakların verimsizleşmesi", "Tımarlı Sipahilerin isyan etmesi", "Savaş sahasında tüfekli piyadenin önem kazanması ve süvarinin etkisizleşmesi"],
+                        correct: 3,
+                        explanation: "Ateşli silahlar yaygınlaşınca, kılıçlı süvari (sipahi) işlevsizleşti; devlet tüfekli piyadeye (Sarıca/Sekban) para bulmak zorunda kaldı."
+                    },
+                    {
+                        id: 114,
+                        type: "quote",
+                        text: "\"Eskiden savaş bir sanat ve kahramanlık gösterisiydi; şimdi ise bir matematik ve mühendislik problemine dönüştü.\"",
+                        question: "Bu değişim en çok hangi gelişmenin sonucudur?",
+                        options: ["Balistik hesaplamalar gerektiren topçuluk ve kale kuşatmaları", "Ok ve yay kullanımı", "Süvari hücumları", "Kılıç düelloları"],
+                        correct: 0,
+                        explanation: "Topçuluk ve Trace Italienne kalelerini kuşatmak geometri ve matematik bilgisi gerektiriyordu."
+                    },
+                    {
+                        id: 115,
+                        type: "standard",
+                        text: "Tüfeğin savaş alanında yay ve oktan daha avantajlı olmasının ana sebebi nedir (Erken dönem için)?",
+                        question: "Tüfeğin yaya üstünlüğü:",
+                        options: ["Daha isabetli olması", "Eğitiminin çok daha kısa sürmesi ve herkesin kullanabilmesi", "Daha hızlı atılması", "Sessiz olması"],
+                        correct: 1,
+                        explanation: "İyi bir okçu yetiştirmek yıllar sürerken, bir tüfekçiyi eğitmek birkaç hafta sürüyordu. Bu da orduları büyüttü."
+                    },
+                    {
+                        id: 116,
+                        type: "standard",
+                        text: "Machiavelli 'Savaş Sanatı' kitabında neden paralı askerleri (Condottieri) eleştirip 'Vatandaş Askeri'ni savunmuştur?",
+                        question: "Machiavelli'nin askeri tezi:",
+                        options: ["Paralı askerler çok pahalı olduğu için", "Vatandaşların daha iyi silah kullanması", "Paralı askerlerin sadakatsizliği ve savaşı uzatması yüzünden", "Paralı askerlerin Latince bilmemesi"],
+                        correct: 2,
+                        explanation: "Machiavelli, parayla savaşanların ölmek istemediğini, sadece Roma tarzı kendi vatanını savunan vatandaşların sadık olduğunu savundu."
+                    },
+                    {
+                        id: 117,
+                        type: "quote",
+                        text: "\"Türkler topu sadece kuşatmalarda değil, meydan savaşlarında da sahra topu olarak etkin kullandılar.\"",
+                        question: "Bu durum Osmanlı'nın hangi savaştaki başarısını açıklar?",
+                        options: ["Malazgirt", "Preveze", "Mohaç ve Çaldıran", "Viyana Kuşatması"],
+                        correct: 2,
+                        explanation: "Çaldıran'da Safevi süvarilerine, Mohaç'ta Macar şövalyelerine karşı topçu ve tüfek üstünlüğü belirleyici oldu."
+                    },
+                    {
+                        id: 118,
+                        type: "standard",
+                        text: "Süngünün (Bayonet) icadı askeri taktiklerde neyi değiştirmiştir?",
+                        question: "Süngünün etkisi:",
+                        options: ["Topçuyu gereksiz kıldı", "Süvariyi güçlendirdi", "Mızraklı askere (Pikemen) olan ihtiyacı ortadan kaldırdı", "Tüfeğin menzilini arttırdı"],
+                        correct: 2,
+                        explanation: "Tüfeğin ucuna süngü takılınca, asker hem ateş edebiliyor hem de kendini süvariye karşı koruyabiliyordu. Mızrakçı sınıfı kalktı."
+                    },
+                    {
+                        id: 119,
+                        type: "paragraph",
+                        text: "Hollandalı Maurice of Nassau, askerlerine tüfek doldurma hareketlerini numaralandırarak ezberletmiş ve senkronize ateş sistemini getirmiştir.",
+                        question: "Bu yenilik askeri kültürde neyin başlangıcıdır?",
+                        options: ["Modern askeri talim (Drill) ve disiplin", "Gerilla savaşı", "Gevşek düzen", "Bireysel kahramanlık"],
+                        correct: 0,
+                        explanation: "Hareketlerin standartlaşması ve talim (Drill), askeri mekanikleşmenin ve disiplinin temelini attı."
+                    },
+                    {
+                        id: 120,
+                        type: "standard",
+                        text: "Aşağıdakilerden hangisi Osmanlı ordusunun duraklama dönemindeki lojistik sorunlarından biri DEĞİLDİR?",
+                        question: "Lojistik sorun değildir:",
+                        options: ["Seferlerin çok uzun sürmesi", "Menzillerdeki yiyeceklerin bozulması", "Asker sayısının artmasıyla iaşenin zorlaşması", "Buharlı trenlerin yetersiz kalması"],
+                        correct: 3,
+                        explanation: "Duraklama döneminde (17. yy) buharlı tren henüz icat edilmemişti. Bu bir anakronizmdir."
+                    },
+                    {
+                        id: 121,
+                        type: "quote",
+                        text: "\"Ortaçağ şatosunun yüksek duvarları artık güvenli değildi.\"",
+                        question: "Duvarları güvensiz kılan teknolojik gelişme:",
+                        options: ["Mancınık", "Barut ve Kuşatma Topları", "Koçbaşı", "Okçu Kuleleri"],
+                        correct: 1,
+                        explanation: "Şahi topları gibi büyük kuşatma topları, dikey yüksek duvarları kolayca yıkabiliyordu."
+                    },
+                    {
+                        id: 122,
+                        type: "standard",
+                        text: "Osmanlı'da 'Kapıkulu' ordusunun (Yeniçeriler) sayısının 16. yüzyıldan sonra aşırı artmasının temel askeri sebebi nedir?",
+                        question: "Yeniçeri sayısı neden arttı?",
+                        options: ["Nüfusun azalması", "Süvarilerin daha çok maaş istemesi", "Avrupa ordularının tüfekli piyade sayısını arttırmasına cevap verme zorunluluğu", "Devşirme sisteminin bozulması"],
+                        correct: 2,
+                        explanation: "Avrupa'da ateş gücü (infantry fire) artınca, Osmanlı mecburen tüfek kullanan yaya asker (Yeniçeri) sayısını arttırmak zorunda kaldı."
+                    },
+                    {
+                        id: 123,
+                        type: "standard",
+                        text: "Deniz savaşlarında 'Kadırga'dan (kürekli) 'Kalyon'a (yelkenli) geçişin temel sebebi nedir?",
+                        question: "Kadırga'dan Kalyon'a geçiş:",
+                        options: ["Kürekçilerin grev yapması", "Rüzgarın daha çok esmesi", "Kadırgaların çok pahalı olması", "Kalyonların daha fazla top taşıyabilmesi ve okyanusa dayanıklı olması"],
+                        correct: 3,
+                        explanation: "Kalyonlar bordalarına yüzlerce top dizebilirken, kadırgalar sadece baş taraflarına birkaç top koyabiliyordu."
+                    },
+                    {
+                        id: 124,
+                        type: "quote",
+                        text: "\"Devlet, savaş makinesini besleyen bir organizmaya dönüştü.\"",
+                        question: "Bu ifade hangi tarihsel süreci anlatır?",
+                        options: ["Derebeyliklerin oluşumu", "Modern Ulus Devletin ve Vergi Sisteminin doğuşu", "Kilisenin güçlenmesi", "Ticaretin azalması"],
+                        correct: 1,
+                        explanation: "Devletin vergi, bürokrasi ve nüfus sayımı yapmasının ana motivasyonu savaşı finanse etmekti."
+                    },
+                    {
+                        id: 125,
+                        type: "paragraph",
+                        text: "Avrupa orduları 'Salvo Ateşi' (yaylım ateşi) tekniğini geliştirdi. İlk sıra ateş ederken arka sıralar dolduruyordu. Bu, savaş alanında kesintisiz bir kurşun yağmuru sağladı.",
+                        question: "Bu tekniğin uygulanabilmesi için askerlerde en çok neye ihtiyaç vardır?",
+                        options: ["Cesaret", "Hızlı koşma yeteneği", "Demir Disiplin ve Senkronizasyon", "İyi nişan alma"],
+                        correct: 2,
+                        explanation: "Salvo ateşi, askerlerin bir makine dişlisi gibi komutla aynı anda hareket etmesini (disiplin) gerektirir."
+                    },
+                    {
+                        id: 126,
+                        type: "standard",
+                        text: "1571 İnebahtı (Lepanto) Deniz Savaşı neyin sonunu işaret eder?",
+                        question: "İnebahtı'nın stratejik anlamı:",
+                        options: ["Osmanlı'nın yıkılışını", "Barutun kullanımını", "İngiltere'nin yükselişini", "Akdeniz'de büyük kadırga savaşları çağının kapanışını"],
+                        correct: 3,
+                        explanation: "İnebahtı, kürekli gemilerin (kadırga) kullanıldığı son büyük meydan savaşıdır."
+                    },
+                    {
+                        id: 127,
+                        type: "standard",
+                        text: "Erken modern dönemde orduların büyüklüğünü sınırlayan en temel faktör neydi?",
+                        question: "Ordu büyüklüğünü sınırlayan faktör:",
+                        options: ["İnsan kaynağı eksikliği", "Lojistik (Erzak temini ve taşıma kapasitesi)", "Silah yetersizliği", "Kralların isteksizliği"],
+                        correct: 1,
+                        explanation: "Napolyon öncesinde ordular, lojistik kısıtlamalar (at arabaları, yol durumu, erzak) yüzünden belli bir sayıyı aşamazdı."
+                    },
+                    {
+                        id: 128,
+                        type: "quote",
+                        text: "\"Askeri devrim tezi, Avrupa'nın dünyayı sömürgeleştirmesini sadece üstün silah teknolojisine bağlayarak 'Batı'nın Yükselişi'ni açıklar.\"",
+                        question: "Bu teze getirilen en büyük eleştiri (Parker vs Black tartışması) nedir?",
+                        options: ["Batı'nın silahları aslında kötüydü", "Sömürgecilik askeri değil ticariydi", "Asya devletleri de benzer teknolojileri kullandı, farkı yaratan sadece teknoloji değil devlet yapısıydı", "Avrupa orduları çok küçüktü"],
+                        correct: 2,
+                        explanation: "Geoffrey Parker'a karşı Jeremy Black, teknolojinin tek başına Avrupa üstünlüğünü açıklayamayacağını savunur."
+                    },
+                    {
+                        id: 129,
+                        type: "standard",
+                        text: "Osmanlı'nın Viyana Kuşatması'nda (1683) başarısız olmasının lojistik nedeni neydi?",
+                        question: "Viyana bozgununun lojistik sebebi:",
+                        options: ["Askerlerin maaşını alamaması", "Viyana'nın çok küçük olması", "Ağır kuşatma toplarının (Şahi) çamur ve yol şartları yüzünden getirilememesi", "Yeniçerilerin isteksizliği"],
+                        correct: 2,
+                        explanation: "Yağışlı mevsim ve kötü yollar, surları yıkacak büyük topların Belgrad'dan öteye taşınmasını engelledi."
+                    },
+                    {
+                        id: 130,
+                        type: "paragraph",
+                        text: "Eskiden şövalyeler savaşın 'yıldızı' idi. Ancak tüfekli piyade kareleri karşısında atlı şövalyelerin 'kahramanlık' yapma şansı kalmadı. Savaş anonimleşti.",
+                        question: "Bu durum sosyal sınıflar arasında nasıl bir değişime yol açtı?",
+                        options: ["Köylülerin daha da fakirleşmesine", "Soyluların (Aristokrasi) askeri tekelinin kırılmasına", "Kralların yetkilerinin azalmasına", "Din adamlarının savaşa katılmasına"],
+                        correct: 1,
+                        explanation: "Sıradan bir köylü, elindeki tüfekle soylu bir şövalyeyi öldürebilir hale gelince aristokrasinin savaşçılık tekeli ve prestiji sarsıldı."
+                    }
+                ]
+            },
+            {
+                id: "part2",
+                label: "Bölüm 2 (Sf. 122-148 Kapsamı)",
+                title: "19. Yüzyıl: Napolyon'dan Endüstriyel Savaşa",
+                description: "1789-1900: Ulusal Savaş, Demiryolları, Telgraf ve Genelkurmay Sistemi. (Kaynak: Dünya Askeri Tarihi - Mesut UYAR)",
+                notes: [
+                    "LEVÉE EN MASSE (FRANSIZ DEVRİMİ): Savaş artık profesyonel krallık ordularının değil, 'Vatanı için ölen vatandaşların' (Zorunlu Askerlik) savaşıdır. Ordu, tüm ulusu kapsayan devasa bir güce dönüştü.",
+                    "NAPOLYON SANATI (KOLORDU SİSTEMİ): Napolyon ordusunu 'Kolordu' denilen küçük, bağımsız manevra birliklerine böldü. 'Ayrı yürü, birlikte vur' prensibi ve düşman ordusunu imha etme stratejisi esastı.",
+                    "CLAUSEWITZ: 'Savaş, siyasetin başka araçlarla devamıdır.' Savaşın belirsiz doğasını 'Sürtünme' (Friction) ve 'Savaş Sisi' (Fog of War) kavramlarıyla açıkladı.",
+                    "İLK ENDÜSTRİYEL SAVAŞ (ABD İÇ SAVAŞI): Demiryolu lojistiği, Telgraf komutası, seri üretim silahlar ve siper savaşı ilk kez bu ölçekte görüldü. Kuzey'in sanayi gücü Güney'i boğdu (Anaconda Planı).",
+                    "PRUSYA EKOLÜ (MOLTKE & GENELKURMAY): Prusya, 'Genelkurmay'ı ordunun beyni yaptı. Demiryolu tarifeleriyle seferberliği bilimselleştirdi. 'Hiçbir plan düşmanla temastan sonra hayatta kalmaz' diyerek astlara inisiyatif verdi (Auftragstaktik).",
+                    "TEKNOLOJİK SIÇRAMA (YİV-SET & ARKADAN DOLDURMA): Yivli tüfekler (Rifling) menzili uzattı; arkadan doldurmalı (Breech-loading/Dreyse) tüfekler askerin yatarak (siperden) ateş etmesini sağladı. Savunma güçlendi.",
+                    "KIRIM SAVAŞI & MEDYA: Telgraf sayesinde halk savaşı günlük takip etti. Savaş muhabirlerinin haberleri kamuoyu baskısı yarattı ve modern hemşirelik/sahra hastanesi reformlarını (F. Nightingale) başlattı.",
+                    "SÖMÜRGE SAVAŞLARI & MAXIM: Makinalı tüfek (Maxim), küçük Avrupa birliklerinin büyük yerli ordularını (örn. Omdurman) kolayca yenmesini sağladı. Asimetrik savaş doğdu.",
+                    "JOMINI VS CLAUSEWITZ: Jomini savaşı değişmez geometrik kuralları olan bir bilim gibi görürken; Clausewitz savaşı insan psikolojisi, şans ve politikanın iç içe geçtiği bir sanat/kaos olarak gördü."
+                ],
+                questions: [
+                    // --- Mevcut Sorular (Karıştırılmış) ---
+                    {
+                        id: 201,
+                        type: "quote",
+                        text: "\"Savaş, siyasetin başka araçlarla devamıdır.\"",
+                        question: "Clausewitz'in bu sözü neyi vurgular?",
+                        options: ["Savaşın sadece askeri olduğunu", "Savaşın doğal afet olduğunu", "Diplomasinin gereksizliğini", "Savaşın politik bir amaç güden rasyonel bir araç olduğunu"],
+                        correct: 3,
+                        explanation: "Savaş kör bir şiddet değil, politik hedefe ulaşmak için bir araçtır."
+                    },
+                    {
+                        id: 202,
+                        type: "standard",
+                        text: "Amerikan İç Savaşı (1861-1865) neden 'İlk Endüstriyel Savaş' olarak adlandırılır?",
+                        question: "İç Savaş'ın modern niteliği:",
+                        options: ["Demiryolları ve telgrafın stratejik kullanımı, seri üretim silahlar", "Uçak kullanımı", "Sadece profesyonellerin savaşması", "Nükleer teori"],
+                        correct: 0,
+                        explanation: "Demiryolu ikmali ve sanayi kapasitesi Kuzey'in zaferinde belirleyici oldu."
+                    },
+                    {
+                        id: 203,
+                        type: "paragraph",
+                        text: "Moltke, komutanlara 'ne yapacaklarını' söyleyip 'nasıl yapacaklarını' bırakırdı. İletişim kopsa bile astlar inisiyatif alırdı.",
+                        question: "Bu Alman doktrini nedir?",
+                        options: ["Blitzkrieg", "Total Savaş", "Auftragstaktik (Görev Taktikleri)", "Yıpratma Savaşı"],
+                        correct: 2,
+                        explanation: "Merkezi kontrol yerine sahadaki komutana güvenme (Görev Taktikleri)."
+                    },
+                    {
+                        id: 204,
+                        type: "standard",
+                        text: "Kırım Savaşı (1853-1856), hangi alanda büyük bir reformun önünü açtı?",
+                        question: "Kırım Savaşı reformu:",
+                        options: ["Hemşirelik ve sahra sıhhiyesi (Florence Nightingale)", "Kamuflaj", "Paraşüt", "Tank"],
+                        correct: 0,
+                        explanation: "Telgrafla gelen ölüm haberleri kamuoyunu ayağa kaldırdı ve sağlık reformu yapıldı."
+                    },
+                    {
+                        id: 205,
+                        type: "quote",
+                        text: "\"Artık ordular kralların oyuncakları değil, milletlerin silahlı gücüydü.\"",
+                        question: "Bu değişim hangi olayla başlar?",
+                        options: ["Paralı Askerlik", "Levée en masse (Fransız Devrimi)", "Feodalizm", "Kabine Savaşları"],
+                        correct: 1,
+                        explanation: "Ulus-devlet ve vatandaş-asker kavramı Fransız Devrimi ile doğdu."
+                    },
+                    // --- YENİ EKLENEN SORULAR (Part 2 - Karıştırılmış) ---
+                    {
+                        id: 206,
+                        type: "standard",
+                        text: "Napolyon'un ordularını daha küçük, bağımsız hareket edebilen ve kendi topçusu/süvarisi olan birimlere bölmesi sistemine ne denir?",
+                        question: "Napolyon'un organizasyon yapısı:",
+                        options: ["Manga Sistemi", "Kolordu (Corps) Sistemi", "Falanks Sistemi", "Gerilla Sistemi"],
+                        correct: 1,
+                        explanation: "Kolordu sistemi, ordunun farklı yollardan gidip savaş alanında birleşmesini (Ayrı yürü, birlikte vur) sağladı."
+                    },
+                    {
+                        id: 207,
+                        type: "quote",
+                        text: "\"Hiçbir plan, düşmanla temastan sonra hayatta kalamaz.\"",
+                        question: "Yaşlı Moltke'nin bu sözü neyin önemini vurgular?",
+                        options: ["Plan yapmanın gereksizliğini", "Düşmanın her şeyi bildiğini", "Savaşta esnekliğin ve adaptasyonun önemini", "Savaşın çok kısa sürdüğünü"],
+                        correct: 2,
+                        explanation: "Moltke, katı planlar yerine duruma göre değişebilen esnek stratejileri savunur."
+                    },
+                    {
+                        id: 208,
+                        type: "paragraph",
+                        text: "Prusya ordusunda subaylar, soylu oldukları için değil, özel harp akademilerinde (Kriegsakademie) eğitim aldıkları ve sınavları geçtikleri için kurmay olabiliyorlardı.",
+                        question: "Bu sistem askeri tarihte neyin kurumsallaşmasıdır?",
+                        options: ["Paralı Askerlik", "Genelkurmay (General Staff) ve Profesyonel Subaylık", "Siyasi Atamalar", "Feodal Sadakat"],
+                        correct: 1,
+                        explanation: "Askerliğin bir bilim olarak görülmesi ve 'Genelkurmay'ın ordunun beyni olarak profesyonelleşmesi."
+                    },
+                    {
+                        id: 209,
+                        type: "standard",
+                        text: "Kırım Savaşı'nda telgrafın kullanılmasının siyasi liderler üzerindeki olumsuz etkisi neydi?",
+                        question: "Telgrafın negatif etkisi (Mikro-yönetim):",
+                        options: ["Başkentteki liderlerin cephedeki generallere sürekli karışması (Micromanagement)", "Haberleşmeyi yavaşlatması", "Düşmanın hattı dinlemesi", "Kağıt israfı"],
+                        correct: 0,
+                        explanation: "Telgraf, Paris ve Londra'daki politikacıların cephedeki komutanlara anlık emir verip işlerine karışmasına yol açtı."
+                    },
+                    {
+                        id: 210,
+                        type: "standard",
+                        text: "Amerikan İç Savaşı'nda Kuzey'in (Union) Güney'i (Confederate) yenmesinin temel stratejik nedeni neydi?",
+                        question: "Kuzey'in zafer sebebi:",
+                        options: ["Daha iyi generalleri olması", "Avrupa'nın yardımı", "Güney'in savaşmak istememesi", "Endüstriyel kapasite, nüfus ve lojistik üstünlük"],
+                        correct: 3,
+                        explanation: "Kuzey, fabrikaları ve demiryolları sayesinde Güney'i lojistik olarak boğdu (Yıpratma Savaşı)."
+                    },
+                    {
+                        id: 211,
+                        type: "quote",
+                        text: "\"Tanrı büyük taburlardan yanadır.\"",
+                        question: "Napolyon bu sözüyle neyi kastetmiştir?",
+                        options: ["Savaşta sayısal üstünlüğün ve kuvvet konsantrasyonunun önemini", "Dinin önemini", "Şans faktörünü", "Topçuların önemini"],
+                        correct: 0,
+                        explanation: "Kritik noktada düşmandan daha fazla asker bulundurmak (kuvvet teksifi) zaferin anahtarıdır."
+                    },
+                    {
+                        id: 212,
+                        type: "paragraph",
+                        text: "19. yüzyılda tüfeklerin namlularına yiv-set açılması (Rifling) ve arkadan doldurmalı (Breech-loading) sisteme geçilmesi savaş alanını değiştirdi.",
+                        question: "Bu değişimin en belirgin taktiksel sonucu nedir?",
+                        options: ["Savaşların kısalması", "Süvarinin güçlenmesi", "Savunmanın güçlenmesi ve piyadenin yere yatarak/siperden ateş etmesi", "Topçunun önemsizleşmesi"],
+                        correct: 2,
+                        explanation: "Arkadan doldurmalı tüfek sayesinde asker ayağa kalkmadan (hedef olmadan) siperden ateş edebilir hale geldi."
+                    },
+                    {
+                        id: 213,
+                        type: "standard",
+                        text: "Prusya'nın 1866'da Avusturya'yı, 1870'de Fransa'yı çok kısa sürede yenmesini sağlayan temel lojistik araç neydi?",
+                        question: "Prusya'nın hız aracı:",
+                        options: ["Kamyonlar", "Demiryolları (Trenler)", "Uçaklar", "At arabaları"],
+                        correct: 1,
+                        explanation: "Prusya, demiryolu ağını askeri seferberlik planlarına göre dizayn etmişti ve askerleri cepheye rakiplerinden önce yığdı."
+                    },
+                    {
+                        id: 214,
+                        type: "quote",
+                        text: "\"Savaş sisi (Fog of War), komutanın gerçeği görmesini engeller.\"",
+                        question: "Clausewitz'e göre komutan bu sisin içinde nasıl karar vermelidir?",
+                        options: ["Sadece şansa güvenerek", "Sezgileriyle (Coup d'oeil) ve belirsizliği kabul ederek", "Karar vermeyip bekleyerek", "Düşmana sorarak"],
+                        correct: 1,
+                        explanation: "İyi komutan, belirsizlik ve kaos içinde sezgileriyle doğru noktayı görebilen kişidir."
+                    },
+                    {
+                        id: 215,
+                        type: "standard",
+                        text: "Jomini'nin savaş teorisi Clausewitz'den nasıl ayrılır?",
+                        question: "Jomini vs Clausewitz:",
+                        options: ["Jomini savaşı bilimsel/geometrik kuralları olan bir satranç gibi görür", "Jomini savaşı tamamen şans olarak görür", "Jomini politikanın önemini vurgular", "Jomini deniz savaşını önemser"],
+                        correct: 0,
+                        explanation: "Clausewitz savaşın belirsizliğini (Sanat/Kaos) vurgularken, Jomini değişmez prensipleri (Bilim/Geometri) vurgular."
+                    },
+                    {
+                        id: 216,
+                        type: "standard",
+                        text: "Amerikan İç Savaşı'ndaki Petersburg Kuşatması, hangi gelecek savaşın provası niteliğindeydi?",
+                        question: "Petersburg neyin habercisiydi?",
+                        options: ["II. Dünya Savaşı / Hava Savaşı", "Soğuk Savaş", "I. Dünya Savaşı / Siper Savaşı", "Vietnam Savaşı"],
+                        correct: 2,
+                        explanation: "Aylar süren siperler, tüneller ve makineli tüfek benzeri (Gatling) silahlar I. Dünya Savaşı'nın habercisiydi."
+                    },
+                    {
+                        id: 217,
+                        type: "paragraph",
+                        text: "Fransız Devrimi ile birlikte askerler artık para için savaşan serseriler değil, vatanı için ölmeye hazır vatandaşlardı.",
+                        question: "Bu durum orduların moral motivasyonunda nasıl bir değişim yarattı?",
+                        options: ["Disiplin azaldı", "Ordular küçüldü", "Firarlar azaldı, milliyetçilik ve vatanseverlik temel motivasyon oldu", "Savaşlar daha az kanlı oldu"],
+                        correct: 2,
+                        explanation: "Milli ordu kavramı, askerlerin kaçmasını engelledi ve orduların devasa boyutlara ulaşmasını sağladı."
+                    },
+                    {
+                        id: 218,
+                        type: "standard",
+                        text: "19. yüzyılda 'Needle Gun' (İğneli Tüfek) olarak bilinen Dreyse tüfeğinin Prusya ordusuna sağladığı avantaj neydi?",
+                        question: "Dreyse tüfeğinin avantajı:",
+                        options: ["Daha uzağa atması", "Dakikadaki atış hızının (Fire rate) rakiplerinden 3-4 kat fazla olması", "Dürbünlü olması", "Sessiz olması"],
+                        correct: 1,
+                        explanation: "Arkadan doldurmalı mekanizma sayesinde Prusyalılar, ağızdan dolma tüfek kullanan Avusturyalıları ateş yoğunluğu ile ezdi."
+                    },
+                    {
+                        id: 219,
+                        type: "quote",
+                        text: "\"Millet Silahlanmış (Nation in Arms)\"",
+                        question: "Bu kavram 19. yüzyılın sonunda devletleri neye zorladı?",
+                        options: ["Barış antlaşmaları yapmaya", "Sadece donanmaya yatırım yapmaya", "Savaşları yasaklamaya", "Tüm erkek nüfusu kapsayan zorunlu askerlik ve seferberlik planları yapmaya"],
+                        correct: 3,
+                        explanation: "Savaş çıkarsa milyonlarca erkeği silahlandırıp cepheye sürecek devasa bir organizasyon gerekiyordu."
+                    },
+                    {
+                        id: 220,
+                        type: "standard",
+                        text: "Basının ve savaş muhabirliğinin (Örn: William Howard Russell) ilk kez sahneye çıktığı savaş hangisidir?",
+                        question: "İlk medya savaşı:",
+                        options: ["Napolyon Savaşları", "Kırım Savaşı", "Balkan Savaşı", "1. Dünya Savaşı"],
+                        correct: 1,
+                        explanation: "Kırım Savaşı'nda muhabirler cepheden telgrafla haber geçerek kamuoyunu yönlendirdi."
+                    },
+                    {
+                        id: 221,
+                        type: "paragraph",
+                        text: "Napolyon, ordusunu 'yerinden temin' (foraging) yöntemiyle besliyordu. Yani ordu geçtiği yerdeki kaynakları tüketiyordu.",
+                        question: "Bu sistemin en büyük dezavantajı neydi?",
+                        options: ["Halkın orduyu çok sevmesi", "Fakir veya 'yakılmış toprak' (scorched earth) uygulanan bölgelerde (Örn: Rusya) ordunun açlıktan kırılması", "Ordunun çok yavaşlaması", "Yemeklerin lezzetsiz olması"],
+                        correct: 1,
+                        explanation: "Napolyon'un Rusya seferinde (1812), Rusların geri çekilirken her şeyi yakması Fransız ordusunu lojistik olarak yok etti."
+                    },
+                    {
+                        id: 222,
+                        type: "standard",
+                        text: "19. yüzyılın sonunda ortaya çıkan 'Sosyal Darwinizm' fikri askeriyeyi nasıl etkiledi?",
+                        question: "Sosyal Darwinizm ve Savaş:",
+                        options: ["Barışı teşvik etti", "Biyolojik silahları yasakladı", "Askerliği kaldırdı", "Savaşı milletlerin hayatta kalma mücadelesi ve 'doğal seleksiyon' olarak meşrulaştırdı"],
+                        correct: 3,
+                        explanation: "Savaş, 'güçlü olan milletin hayatta kalacağı' kaçınılmaz bir biyolojik zorunluluk olarak görüldü."
+                    },
+                    {
+                        id: 223,
+                        type: "quote",
+                        text: "\"Savaşın grameri (teknik) değişebilir ama mantığı (politik) değişmez.\"",
+                        question: "Bu Clausewitz prensibi günümüzde siber savaşlar için bile geçerli midir?",
+                        options: ["Hayır, teknoloji her şeyi değiştirir", "Evet, kullanılan araç (siber) değişse de amaç hala politik bir üstünlük sağlamaktır", "Sadece konvansiyonel savaşta geçerlidir", "Siber savaş savaş değildir"],
+                        correct: 1,
+                        explanation: "Clausewitz'in teorisi teknoloji-bağımsızdır; araçlar değişir, amaç (rakibe iradeni kabul ettirmek) değişmez."
+                    },
+                    {
+                        id: 224,
+                        type: "standard",
+                        text: "Prusya Genelkurmayı'nın harita ve demiryolu şubelerinin temel görevi neydi?",
+                        question: "Genelkurmay'ın görevi:",
+                        options: ["Turistik gezi planlamak", "Seferberlik anında milyonlarca askerin hangi trenle, hangi saatte, nereye gideceğini dakikası dakikasına planlamak (Tarife)", "Ticari malları taşımak", "Düşman haritalarını çalmak"],
+                        correct: 1,
+                        explanation: "Savaş ilanı anında kaos çıkmaması için her trenin kalkış saati yıllar öncesinden planlanmıştı."
+                    },
+                    {
+                        id: 225,
+                        type: "paragraph",
+                        text: "Amerikan İç Savaşı'nda 'Anaconda Planı', Güney limanlarını denizden abluka altına alarak ekonomisini boğmayı hedefliyordu.",
+                        question: "Bu plan savaşın hangi boyutunu gösterir?",
+                        options: ["Taktik boyut", "Ekonomik/Stratejik boyut", "Psikolojik boyut", "Diplomatik boyut"],
+                        correct: 1,
+                        explanation: "Düşmanın savaşma kapasitesini ekonomisini çökertip aç bırakarak yok etmek büyük stratejidir."
+                    },
+                    {
+                        id: 226,
+                        type: "standard",
+                        text: "Makinalı tüfeğin (Maxim Gun) icadı ve sömürgelerde kullanımı neyi kanıtladı?",
+                        question: "Makinalı tüfeğin sömürge etkisi:",
+                        options: ["Yerlilerin daha iyi savaştığını", "Küçük bir Avrupalı birliğin, binlerce yerli savaşçıyı ateş gücüyle yok edebileceğini (Omdurman Savaşı)", "Barışın önemini", "Sömürgeciliğin bittiğini"],
+                        correct: 1,
+                        explanation: "Hilaire Belloc'un dediği gibi: 'Ne olursa olsun, bizim Maxim tüfeğimiz var, onların yok.'"
+                    },
+                    {
+                        id: 227,
+                        type: "quote",
+                        text: "\"Lojistik, stratejinin elini kolunu bağlar.\"",
+                        question: "Bu söz ne anlama gelir?",
+                        options: ["Lojistik önemsizdir", "Strateji her zaman lojistiği yener", "Bir ordu, ancak erzak ve cephanesinin yettiği yere kadar gidebilir", "Generaller lojistikçileri sevmez"],
+                        correct: 2,
+                        explanation: "Haritada çizilen oklar ne kadar iddialı olursa olsun, kamyonların/trenlerin gidemediği yere ordu gidemez."
+                    },
+                    {
+                        id: 228,
+                        type: "standard",
+                        text: "Napolyon'un Waterloo'da (1815) yenilmesinin nedenlerinden biri nedir?",
+                        question: "Waterloo yenilgisinin sebebi:",
+                        options: ["Hava kuvvetlerinin olmaması", "Napolyon'un korkması", "Fransız askerlerinin isyan etmesi", "Prusya ordusunun (Blücher) zamanında yetişip İngilizlere (Wellington) katılması"],
+                        correct: 3,
+                        explanation: "Napolyon düşmanlarını ayrı ayrı yakalayamadı; müttefikler birleşerek sayısal üstünlük sağladı."
+                    },
+                    {
+                        id: 229,
+                        type: "paragraph",
+                        text: "19. yüzyıl boyunca Osmanlı ordusu da Prusya modelini örnek almaya çalıştı. II. Abdülhamid döneminde Alman askeri heyetleri (Von der Goltz Paşa) İstanbul'a geldi.",
+                        question: "Bu etkileşimin en somut sonucu nedir?",
+                        options: ["Yeniçeri Ocağı'nın kurulması", "Donanmanın güçlenmesi", "Osmanlı ordusunun I. Dünya Savaşı'na Alman doktrini ve silahlarıyla girmesi", "İngilizlerle ittifak yapılması"],
+                        correct: 2,
+                        explanation: "Osmanlı subayları Alman ekolüyle yetişti, Alman silahları (Mauser) alındı."
+                    },
+                    {
+                        id: 230,
+                        type: "standard",
+                        text: "Clausewitz'e göre 'Sürtünme' (Friction) nedir?",
+                        question: "Sürtünme (Friction) kavramı:",
+                        options: ["Topların ısınması", "Askerlerin birbiriyle kavga etmesi", "Savaşta en basit işlerin bile (yağmur, yorgunluk, korku, yanlış anlama yüzünden) zorlaşması", "Araçların bozulması"],
+                        correct: 2,
+                        explanation: "Kağıt üzerindeki planlar sahada 'sürtünme' (Murphy kanunları) yüzünden asla mükemmel işlemez."
+                    }
+                ]
+            },
+            {
+                id: "part3",
+                label: "Bölüm 3 (Sf. 164-187)",
+                title: "Yanılgılar Çağı: Russo-Japon & Balkan",
+                description: "1904-1913: Yanlış Dersler, Taarruz Kültü ve I. Dünya Savaşı'nın Kilitlenmesi.",
+                notes: [
+                    "YANLIŞ DERSLER (RUSSO-JAPON): Batılı gözlemciler makinalı tüfeğin savunma gücünü görmezden geldi. Japon zaferini 'Japon Ruhu'na (Bushido/Moral) bağladı. Sonuç: Ateş gücünü küçümseme.",
+                    "TAARRUZ KÜLTÜ (CULT OF THE OFFENSIVE): I. Dünya Savaşı öncesi Avrupa'da hakim dogma. 'Cesaretle saldıran kazanır, savunma korkaklıktır.' Bu, savaşın ilk aylarında devasa kayıplara yol açtı.",
+                    "BALKAN SAVAŞLARI HEZİMETİ: Osmanlı, henüz seferberliğini tamamlamadan (hazırlıksız) ve lojistik kurmadan siyasi baskıyla taarruza geçti. Savunmada kalması gerekirken 'Topyekün saldırı' denemesi faciayla bitti.",
+                    "REDİF TEŞKİLATI SORUNU: Osmanlı yedek askerleri (Redifler) eğitimsiz ve disiplinsizdi. Cephede paniğe kapılıp kaçtılar, Nizamiye birliklerinin de düzenini bozdular.",
+                    "SİPER KİLİTLENMESİ (STALEMATE): Makineli Tüfek + Dikenli Tel + Topçu = Savunmanın mutlak üstünlüğü. Piyadenin 'No-man's land'i (Ölüm bölgesi) geçmesi imkansızlaştı.",
+                    "SCHLIEFFEN PLANI: Almanların 'hızlı savaş' planı. Lojistik yetersizlik (asker yürüyor, ikmal yetişmiyor) ve iletişim kopukluğu yüzünden Marne'de durduruldular. Siper savaşı başladı.",
+                    "KISA SAVAŞ YANILGISI: 'Noel'e kadar evdeyiz.' Kimse 4 yıl sürecek bir sanayi savaşı beklemiyordu. Bu yüzden 1915'te 'Mermi Krizi' (Shell Crisis) yaşandı.",
+                    "ÇÖZÜM ARAYIŞLARI: Kilitlenmeyi kırmak için: 1. TANK (Teli ezmek, siper geçmek), 2. GAZ (Askeri siperden çıkarmak), 3. SIZMA TAKTİKLERİ (Hutier/Stormtroopers - zayıf yerden sızıp arkaya sarkmak).",
+                    "GELİBOLU (AMFİBİ ZORLUĞU): Modern savunmaya karşı denizden karaya asker çıkarmanın ne kadar zor olduğu görüldü.",
+                    "DENİZALTI VE ABD: Alman denizaltıları (U-Bot) sivil ticaret gemilerini vurunca ABD savaşa girdi ve dengeyi bozdu.",
+                    "HAVACILIK: Uçaklar savaşın başında sadece 'Keşif ve Gözetleme' (düşmanı bulma/topçuya koordinat verme) için kullanıldı, sonra it dalaşı ve bombardıman başladı."
+                ],
+                questions: [
+                    // --- Mevcut Sorular (Karıştırılmış) ---
+                    {
+                        id: 301,
+                        type: "quote",
+                        text: "\"Batılı gözlemciler: Zayiat umursanmayıp cesaretle taarruz edilirse hiçbir savunma buna dayanamaz.\"",
+                        question: "Bu hatalı çıkarım hangi doktrini doğurdu?",
+                        options: ["Esnek Savunma", "Yıpratma Savaşı", "Blitzkrieg", "Taarruz Kültü (Cult of the Offensive)"],
+                        correct: 3,
+                        explanation: "Japonların süngü hücumlarını yanlış yorumlayıp 'Moral, maddeden üstündür' dediler."
+                    },
+                    {
+                        id: 302,
+                        type: "standard",
+                        text: "1912 Balkan Savaşı'ndaki Osmanlı hezimetinin operatif nedeni:",
+                        question: "Balkan Savaşı yenilgi sebebi:",
+                        options: ["Teknoloji eksikliği", "Donanma eksikliği", "Hazırlıksız (seferberlik bitmeden) taarruza geçilmesi", "Asker azlığı"],
+                        correct: 2,
+                        explanation: "Savunmada kalıp güç toplamak yerine, siyasi baskıyla hazırlıksız taarruz (offensive) yapıldı."
+                    },
+                    {
+                        id: 303,
+                        type: "standard",
+                        text: "Batılılar Russo-Japon savaşında Rus yenilgisini neye bağladı (Hatalı olarak)?",
+                        question: "Rus yenilgisinin algılanan sebebi:",
+                        options: ["Rus askerinin moral bozukluğu ve korkaklığı", "Lojistik hatların uzunluğu", "Japon teknolojisi", "Kış şartları"],
+                        correct: 0,
+                        explanation: "Asıl sebep lojistikti (tek tren hattı), ama Batılılar bunu 'Rusların ruhsuzluğu' olarak gördü."
+                    },
+                    {
+                        id: 304,
+                        type: "standard",
+                        text: "Gözlemciler Balkan Savaşları'nda (İşkodra/Edirne) neden 'Savunmanın Gücü'nü göremedi?",
+                        question: "Neden ders çıkarmadılar?",
+                        options: ["Göremediler", "Balkan orduları zayıftı", "Oryantalist bakışla 'Türkler beceriksiz' dediler", "Hava kötüydü"],
+                        correct: 2,
+                        explanation: "Siperlerin gücünü değil, 'Türklerin askerlik yapamadığını' düşündüler."
+                    },
+                    {
+                        id: 305,
+                        type: "quote",
+                        text: "\"Ölüm bölgesi (No-man's land) geçilemez hale gelmişti.\"",
+                        question: "Bu durum neye yol açtı?",
+                        options: ["Siper Kilitlenmesi (Stalemate)", "Yıldırım Savaşı", "Deniz Savaşı", "Barış"],
+                        correct: 0,
+                        explanation: "Taarruz eden piyade, makinalı tüfek karşısında eridiği için cepheler dondu."
+                    },
+                    // --- YENİ EKLENEN SORULAR (Part 3 - Karıştırılmış) ---
+                    {
+                        id: 306,
+                        type: "standard",
+                        text: "Port Arthur kuşatması (1904), I. Dünya Savaşı'ndaki hangi gerçeğin habercisiydi?",
+                        question: "Port Arthur'un dersi:",
+                        options: ["Gemilerin önemsizliği", "Süvarinin çok etkili olduğu", "Savaşların bir günde biteceği", "Modern tahkimatlara ve makineli tüfeğe karşı piyade hücumunun intihar olduğu"],
+                        correct: 3,
+                        explanation: "Japonlar Port Arthur'u alırken on binlerce asker kaybetti; bu siper savaşının kanlı bir provasıydı."
+                    },
+                    {
+                        id: 307,
+                        type: "quote",
+                        text: "\"Noel'e kadar evdeyiz.\"",
+                        question: "1914'te askerlerin ve halkın bu inancı neyi gösterir?",
+                        options: ["Endüstriyel savaşın uzun ve yıpratıcı doğasının henüz anlaşılmadığını (Kısa Savaş Yanılgısı)", "Savaşın çok kolay olacağını", "Herkesin tatili sevdiğini", "Lojistiğin mükemmel olduğunu"],
+                        correct: 0,
+                        explanation: "Herkes savaşın Napolyon dönemindeki gibi birkaç büyük meydan muharebesiyle biteceğini sandı; siperlerde 4 yıl kalacaklarını bilmiyorlardı."
+                    },
+                    {
+                        id: 308,
+                        type: "paragraph",
+                        text: "Almanların Schlieffen Planı, Rusya seferberliğini tamamlamadan Fransa'yı 6 haftada saf dışı bırakmayı öngörüyordu. Bunun için Belçika üzerinden geniş bir yay çizdiler.",
+                        question: "Bu planın başarısız olma sebebi nedir?",
+                        options: ["Belçika çikolataları", "Rusya'nın savaşa girmemesi", "İngiltere'nin tarafsız kalması", "Lojistik tükeniş, iletişim kopukluğu ve 'Marne Mucizesi' ile Fransızların direnmesi"],
+                        correct: 3,
+                        explanation: "Alman sağ kanadı o kadar hızlı ilerledi ki ikmal yetişemedi, askerler yorgun düştü ve Fransız karşı taarruzu (Marne) planı bitirdi."
+                    },
+                    {
+                        id: 309,
+                        type: "standard",
+                        text: "I. Dünya Savaşı'nda savunma hatlarını yarmak için geliştirilen 'Sızma Taktikleri' (Hutier Tactics) nasıldı?",
+                        question: "Hutier taktiklerinin özü:",
+                        options: ["Tüm orduyla tek noktaya saldırmak", "Düşmanın güçlü noktalarıyla savaşmayıp etrafından dolaşmak (bypass) ve gerideki komuta merkezlerini vurmak", "Sadece topçu kullanmak", "Uzun süre siperde beklemek"],
+                        correct: 1,
+                        explanation: "Fırtına birlikleri (Stormtroopers), direnç noktalarıyla zaman kaybetmeyip arkaya sızarak düşman sistemini felç ederdi."
+                    },
+                    {
+                        id: 310,
+                        type: "quote",
+                        text: "\"Tanklar, atların yapamadığını yapmak için tasarlandı.\"",
+                        question: "Tankın savaş alanındaki birincil görevi neydi (İlk çıkışında)?",
+                        options: ["Hızlı gitmek", "Dikenli telleri ezmek ve makinalı tüfek ateşine karşı piyadeye kalkan olmak", "Uçakları vurmak", "Şehirleri bombalamak"],
+                        correct: 1,
+                        explanation: "Tank bir 'yarma' silahı olarak, piyadenin geçemediği 'No-man's land'i geçmek için icat edildi."
+                    },
+                    {
+                        id: 311,
+                        type: "standard",
+                        text: "Osmanlı ordusunda 'Redif' teşkilatının Balkan Savaşı'ndaki performansı nasıldı?",
+                        question: "Rediflerin durumu:",
+                        options: ["Mükemmeldi", "Nizamiyeden daha iyiydiler", "Savaşa katılmadılar", "Eğitimsiz, disiplinsiz ve donanımsız oldukları için cephede paniğe ve bozguna yol açtılar"],
+                        correct: 3,
+                        explanation: "Yedek askerler (Redif), yeterli talim görmedikleri için modern savaşın stresi altında dağıldılar."
+                    },
+                    {
+                        id: 312,
+                        type: "standard",
+                        text: "I. Dünya Savaşı'nda 'Yıpratma Savaşı' (War of Attrition) stratejisinin en kanlı örneği hangisidir?",
+                        question: "Yıpratma savaşının sembolü:",
+                        options: ["Verdun Muharebesi", "Mohaç", "Viyana", "Tannenberg"],
+                        correct: 0,
+                        explanation: "Alman General Falkenhayn, 'Fransız ordusunun kanını son damlasına kadar akıtmak' (Bleed France white) için Verdun'a saldırdı."
+                    },
+                    {
+                        id: 313,
+                        type: "quote",
+                        text: "\"Seferberlik (Mobilization) ilanı, aslında savaş ilanıdır.\"",
+                        question: "1914'te diplomatların savaşı durduramamasının sebebi olan bu mekanizma neden böyle işliyordu?",
+                        options: ["Diplomatlar tatile gitmişti", "Demiryolu tarifeleri (Moltke planları) bir kez tetiklenince durdurulamazdı, aksi halde ordu kaos içinde kalırdı", "Telgraflar bozuktu", "Krallar savaş istiyordu"],
+                        correct: 1,
+                        explanation: "Seferberlik düğmesine basıldığında milyonlarca asker ve tren harekete geçer; bunu yarıda kesmek ülkeyi savunmasız bırakmak demekti."
+                    },
+                    {
+                        id: 314,
+                        type: "standard",
+                        text: "Kimyasal silahların (Gaz) savaş alanındaki temel amacı neydi?",
+                        question: "Gazın taktik amacı:",
+                        options: ["Düşmanı öldürmekten çok siperlerinden çıkarmak ve paniğe sevk etmek", "Havayı temizlemek", "Tankları durdurmak", "Uçakları düşürmek"],
+                        correct: 0,
+                        explanation: "Gaz, askeri siperden çıkmaya veya maske takarak savaş yeteneğini düşürmeye zorlardı."
+                    },
+                    {
+                        id: 315,
+                        type: "paragraph",
+                        text: "Balkan Savaşı'ndan önce Osmanlı kurmayları, Balkan devletlerinin birleşemeyeceğini düşünüyordu. Ancak onlar 'Balkan Ligi'ni kurup koordineli saldırdılar.",
+                        question: "Bu istihbarat hatasının sonucu ne oldu?",
+                        options: ["Osmanlı kazandı", "Rusya Osmanlı'ya yardım etti", "Osmanlı ordusu kuvvetlerini tek bir cepheye yığmak yerine dört farklı cepheye bölmek zorunda kaldı ve hepsinde yenildi", "Savaş çıkmadı"],
+                        correct: 2,
+                        explanation: "Yunan, Bulgar, Sırp ve Karadağlıların aynı anda saldırması Osmanlı'nın 'iç hat manevrası' yapmasını engelledi."
+                    },
+                    {
+                        id: 316,
+                        type: "standard",
+                        text: "Denizaltıların (U-boat) I. Dünya Savaşı'na stratejik etkisi neydi?",
+                        question: "Denizaltıların etkisi:",
+                        options: ["Deniz savaşlarını bitirdi", "Sadece askeri gemileri vurdu", "Hiçbir etkisi olmadı", "Müttefiklerin ticaret ve ikmal gemilerini batırarak İngiltere'yi açlık tehlikesiyle, ABD'yi ise savaşa girmekle yüz yüze bıraktı"],
+                        correct: 3,
+                        explanation: "Sınırsız denizaltı savaşı, sivil gemileri de batırarak ABD'nin savaşa girmesine neden oldu."
+                    },
+                    {
+                        id: 317,
+                        type: "quote",
+                        text: "\"Elan Vital (Yaşama Sevinci/Saldırı Ruhu)\"",
+                        question: "Fransız ordusunun bu felsefesi 1914'te neye sebep oldu?",
+                        options: ["Büyük zaferlere", "Mavi-Kırmızı üniformalarla makineli tüfeklerin üzerine yürüyen Fransız askerlerinin devasa kayıplar vermesine", "Barış antlaşmasına", "Savunma savaşına"],
+                        correct: 1,
+                        explanation: "Fransızlar, 'Ruh, kurşunu yener' diyerek kamuflajsız ve tedbirsiz taarruz ettiler (Battle of the Frontiers)."
+                    },
+                    {
+                        id: 318,
+                        type: "standard",
+                        text: "Tannenberg Muharebesi'nde (1914) Almanların Rusları yenmesi neyi kanıtladı?",
+                        question: "Tannenberg'in dersi:",
+                        options: ["Rusların çok güçlü olduğunu", "Doğu Cephesi'nde siper savaşının Batı'daki kadar kilitlenmediğini, manevra savaşının hala mümkün olduğunu", "Kışın savaşılmayacağını", "Süvarinin bittiğini"],
+                        correct: 1,
+                        explanation: "Doğu cephesi çok geniş olduğu için (Batı'nın aksine) siper hatlarının etrafından dolanmak ve kuşatma yapmak mümkündü."
+                    },
+                    {
+                        id: 319,
+                        type: "standard",
+                        text: "Çanakkale (Gelibolu) Savaşı'nın dünya askeri tarihindeki önemi nedir?",
+                        question: "Gelibolu'nun özelliği:",
+                        options: ["İlk tank savaşıdır", "İlk nükleer denemedir", "Modern anlamda ilk büyük amfibi (çıkarma) harekatı ve bunun zorluklarının görülmesidir", "Son kılıç savaşıdır"],
+                        correct: 2,
+                        explanation: "Kıyı savunmasına karşı denizden karaya asker çıkarmanın ne kadar zor ve kanlı olduğu görüldü."
+                    },
+                    {
+                        id: 320,
+                        type: "paragraph",
+                        text: "Osmanlı ordusunun I. Dünya Savaşı'ndaki lojistik durumu felaketti. Kafkas cephesinde (Sarıkamış) askerler kurşundan çok soğuk ve açlıktan öldü.",
+                        question: "Bu durumun temel altyapısal sebebi neydi?",
+                        options: ["Askerin dayanıksız olması", "Demiryolu ağının Anadolu'nun doğusuna ulaşmaması", "Almanların yardım etmemesi", "Rusların yolu kapatması"],
+                        correct: 1,
+                        explanation: "Ankara'nın doğusunda demiryolu yoktu; erzak kağnılarla veya sırtta taşınıyordu, bu da yetersizdi."
+                    },
+                    {
+                        id: 321,
+                        type: "quote",
+                        text: "\"Lions led by donkeys (Eşekler tarafından yönetilen aslanlar)\"",
+                        question: "Bu söz I. Dünya Savaşı'nda kimler için kullanılmıştır?",
+                        options: ["Osmanlı askerleri", "Cesur İngiliz askerleri ve onları ölüme gönderen beceriksiz İngiliz generalleri", "Alman tankçıları", "Rus köylüleri"],
+                        correct: 1,
+                        explanation: "Siper savaşının mantıksızlığı içinde askerlerin cesaretine rağmen komutanların yaratıcılıktan uzak emirleri (sürekli taarruz) eleştirilir."
+                    },
+                    {
+                        id: 322,
+                        type: "standard",
+                        text: "Havacılığın I. Dünya Savaşı'ndaki ilk ve en önemli rolü neydi?",
+                        question: "Uçakların ilk görevi:",
+                        options: ["Bombardıman", "İt dalaşı (Dogfight)", "Keşif ve Gözetleme (Reconnaissance)", "Asker taşıma"],
+                        correct: 2,
+                        explanation: "Uçaklar önce düşman ordusunun nerede olduğunu görmek ve topçuya koordinat vermek için kullanıldı."
+                    },
+                    {
+                        id: 323,
+                        type: "standard",
+                        text: "Osmanlı'nın Balkan Savaşları'ndaki 'Kumanova' yenilgisi neden sürpriz oldu?",
+                        question: "Kumanova şoku:",
+                        options: ["Kimse savaş beklemiyordu", "Batılılar ve Osmanlılar, Sırp ordusunu küçümsüyorlardı ama Sırplar modern topçuyla Osmanlı'yı ezdi", "Osmanlı'nın topu yoktu", "Savaş gece yapıldı"],
+                        correct: 1,
+                        explanation: "Balkan ordularının reformları ve Fransız topları (Creusot) hafife alınmıştı."
+                    },
+                    {
+                        id: 324,
+                        type: "quote",
+                        text: "\"Race to the Sea (Denize Koşu)\"",
+                        question: "Bu hareketlilik neyle sonuçlandı?",
+                        options: ["Deniz savaşıyla", "İsviçre sınırından Manş Denizi'ne kadar uzanan kesintisiz bir siper hattının oluşmasıyla", "Savaşın bitmesiyle", "Almanların İngiltere'yi işgaliyle"],
+                        correct: 1,
+                        explanation: "İki ordu birbirini kuşatmaya çalışırken kuzeye doğru ilerledi ve sonunda deniz kenarında boş alan kalmayınca kazmaya başladılar."
+                    },
+                    {
+                        id: 325,
+                        type: "standard",
+                        text: "Almanların 1918 Bahar Taarruzu (Michael Offensive) neden başarısız oldu?",
+                        question: "Son Alman taarruzunun başarısızlığı:",
+                        options: ["Askerleri yoktu", "Tankları bozuldu", "Hitler darbe yaptı", "Taktiksel başarılar (ilerleme) stratejik bir sonuca dönüşemedi; lojistik tıkandı ve Amerikan birlikleri yetişti"],
+                        correct: 3,
+                        explanation: "Hutier taktikleriyle çok ilerlediler ama ikmal yetişemedi ve yorgun Alman ordusu Müttefik karşı saldırısıyla çöktü."
+                    },
+                    {
+                        id: 326,
+                        type: "paragraph",
+                        text: "Osmanlı'nın son döneminde 'Alaylı' (kıtadan yetişme) ve 'Mektepli' (harbiyeli) subay çekişmesi vardı.",
+                        question: "Bu çekişmenin Balkan Savaşları'na etkisi ne oldu?",
+                        options: ["Olumlu oldu, rekabet kaliteyi arttırdı", "Ordu içinde emir-komuta zincirini ve disiplini bozdu, siyasallaşmayı arttırdı", "Hiçbir etkisi olmadı", "Donanmayı güçlendirdi"],
+                        correct: 1,
+                        explanation: "Subayların İttihatçı-Halaskaran diye bölünmesi ve birbirine güvenmemesi felaketin sebeplerinden biriydi."
+                    },
+                    {
+                        id: 327,
+                        type: "standard",
+                        text: "Makineli tüfeğin savunmadaki en etkili kullanım şekli nasıldır?",
+                        question: "Makineli tüfek taktiği:",
+                        options: ["Tek tek ateş etmek", "Çapraz Ateş (Crossfire) oluşturarak ölüm bölgeleri yaratmak", "Havaya ateş etmek", "Koşarak ateş etmek"],
+                        correct: 1,
+                        explanation: "İki makineli tüfek birbirini koruyacak şekilde yerleştirilirse (Enfilade), önlerindeki piyadeyi biçerler."
+                    },
+                    {
+                        id: 328,
+                        type: "quote",
+                        text: "\"Home by Christmas (Noel'de evdeyiz)\" düşüncesi sadece halkta değil, ekonomide de hakimdi.",
+                        question: "Bu yüzden savaşın başında devletler hangi hatayı yaptı?",
+                        options: ["Çok fazla silah ürettiler", "Yeterli cephane stoku yapmadılar (Shell Crisis), fabrikaları tam kapasite çalıştırmadılar", "Barış antlaşması imzaladılar", "Bankaları kapattılar"],
+                        correct: 1,
+                        explanation: "Savaşın kısa süreceğini sanıp mühimmat üretimini arttırmadılar; 1915'te 'Mermi Krizi' yaşandı."
+                    },
+                    {
+                        id: 329,
+                        type: "standard",
+                        text: "Japonların 1905'te Rus donanmasını Tsushima'da yok etmesi dünya tarihinde neyi değiştirdi?",
+                        question: "Tsushima'nın küresel etkisi:",
+                        options: ["Balıkçılığı etkiledi", "İlk kez bir Asya ülkesi modern bir Batı gücünü yendi; sömürge halklarına umut verdi", "Japonya battı", "Rusya güçlendi"],
+                        correct: 1,
+                        explanation: "Batı'nın yenilmezliği miti yıkıldı."
+                    },
+                    {
+                        id: 330,
+                        type: "paragraph",
+                        text: "Paris Taksi olayında, Marne Savaşı'na asker yetiştirmek için şehirdeki tüm taksiler kullanıldı.",
+                        question: "Bu olay neyin sembolüdür?",
+                        options: ["Fransız taksicilerinin zenginliğinin", "Topyekün Savaş (Total War) ve seferberlik ruhunun; sivil araçların bile askeri amaca hizmet etmesinin", "Lojistiğin önemsizliğinin", "Paris trafiğinin"],
+                        correct: 1,
+                        explanation: "Cephe ile cephe gerisi ayrımının kalktığını gösteren ikonik bir olaydır."
+                    }
+                ]
+            },
+            // --- FINAL DENEME SORULARI (20 Soru: 8 Kolay, 8 Normal, 4 Zor) ---
+            {
+                id: "final-exam",
+                label: "Final Deneme Sınavı",
+                title: "DAT Final Deneme Sınavı",
+                description: "20 Soru | Hocanın Vurguları | Kolay-Normal-Zor Seviyeler",
+                notes: ["Bu bölümdeki sorular tüm dönemi kapsar ve final provası niteliğindedir."],
+                questions: [
+                    // --- KOLAY (8 Soru) ---
+                    {
+                        id: 1,
+                        difficulty: "Kolay",
+                        text: "\"Teknolojik Determinizm\" kavramı askeri tarihte neyi ifade eder?",
+                        question: "Teknolojik Determinizm nedir?",
+                        options: [
+                            "Teknolojinin savaşta önemsiz olduğunu",
+                            "Coğrafyanın kader olduğunu",
+                            "Savaşların sonucunu sadece kullanılan silahın üstünlüğünün belirlediği inancını",
+                            "Savaşların ekonomik sebeplerle çıktığını"
+                        ],
+                        correct: 2,
+                        explanation: "Hocanın en çok vurguladığı kavram. Silah tek başına savaş kazandırmaz (Örn: Tüfekli Kızılderililer vs ABD ordusu). Önemli olan organizasyon ve doktrindir."
+                    },
+                    {
+                        id: 2,
+                        difficulty: "Kolay",
+                        text: "Clausewitz'in en ünlü tanımına göre savaş nedir?",
+                        question: "Clausewitz'e göre savaş:",
+                        options: [
+                            "Siyasetin başka araçlarla devamıdır",
+                            "Tanrı'nın bir cezasıdır",
+                            "Diplomasinin bittiği yerdir",
+                            "Ekonomik paylaşım kavgasıdır"
+                        ],
+                        correct: 0,
+                        explanation: "Savaş kör bir şiddet değil, politik bir amaca ulaşmak için kullanılan rasyonel bir enstrümandır."
+                    },
+                    {
+                        id: 3,
+                        difficulty: "Kolay",
+                        text: "1453 sonrası yüksek ve ince kale surlarının yerini alan, top ateşine dayanıklı mimari yapı hangisidir?",
+                        question: "Modern kale mimarisi:",
+                        options: [
+                            "Hendek Sistemi",
+                            "Ahşap Surlar",
+                            "Donjon Kuleleri",
+                            "Trace Italienne (Yıldız Tabyalar)"
+                        ],
+                        correct: 3,
+                        explanation: "Top güllelerini sektirmek için alçak, kalın ve açılı duvarlar (geometrik mimari) geliştirildi."
+                    },
+                    {
+                        id: 4,
+                        difficulty: "Kolay",
+                        text: "1914'te I. Dünya Savaşı başladığında askerler ve halk arasındaki yaygın (ve hatalı) inanç neydi?",
+                        question: "1914'teki yaygın inanç:",
+                        options: [
+                            "Savaşın yıllarca süreceği",
+                            "Almanya'nın hemen yenileceği",
+                            "Noel'e kadar evde olacakları (Kısa Savaş)",
+                            "Denizaltıların savaşı kazanacağı"
+                        ],
+                        correct: 2,
+                        explanation: "Endüstriyel savaşın ne olduğu anlaşılmamıştı. Napolyon savaşları gibi birkaç meydan muharebesiyle biteceğini sandılar."
+                    },
+                    {
+                        id: 5,
+                        difficulty: "Kolay",
+                        text: "Osmanlı ordusunun lojistik ihtiyacını karşılayan, güzergah üzerine erzak depolayan teşkilat hangisidir?",
+                        question: "Osmanlı lojistik birimi:",
+                        options: [
+                            "Menzil Teşkilatı",
+                            "Lonca",
+                            "Tımar",
+                            "Derbentçiler"
+                        ],
+                        correct: 0,
+                        explanation: "Ordunun geçeceği yollardaki konaklama noktalarına (Menzil) önceden yiyecek stoklanırdı."
+                    },
+                    {
+                        id: 6,
+                        difficulty: "Kolay",
+                        text: "Tüfeklerin ucuna süngü (bayonet) takılması askeri taktiklerde hangi sınıfı gereksiz kıldı?",
+                        question: "Süngünün bitirdiği sınıf:",
+                        options: [
+                            "Topçuyu",
+                            "Süvariyi",
+                            "Lağımcıları",
+                            "Mızraklı Piyadeyi (Pikemen)"
+                        ],
+                        correct: 3,
+                        explanation: "Asker hem ateş edip hem kendini atlılara karşı koruyabilir hale gelince mızrakçıya gerek kalmadı."
+                    },
+                    {
+                        id: 7,
+                        difficulty: "Kolay",
+                        text: "Kırım Savaşı (1853-56) sırasında modern hemşireliğin temellerini atan isim kimdir?",
+                        question: "Hemşireliğin kurucusu:",
+                        options: [
+                            "Clara Barton",
+                            "Florence Nightingale",
+                            "Halide Edip",
+                            "Marie Curie"
+                        ],
+                        correct: 1,
+                        explanation: "Basının savaşı izlemesi ve kamuoyu baskısı, sağlık reformunu zorunlu kıldı."
+                    },
+                    {
+                        id: 8,
+                        difficulty: "Kolay",
+                        text: "Fransız Devrimi sonrası ortaya çıkan 'Levée en Masse' kavramı neyi ifade eder?",
+                        question: "Levée en Masse nedir?",
+                        options: [
+                            "Barış antlaşmasını",
+                            "Kralın yetkilerinin artmasını",
+                            "Topyekün Seferberlik / Vatandaş Askerliği",
+                            "Vergi affını"
+                        ],
+                        correct: 2,
+                        explanation: "Savaş artık kralların değil, vatanı savunan milletlerin savaşına dönüştü."
+                    },
+                    // --- NORMAL (8 Soru) ---
+                    {
+                        id: 9,
+                        difficulty: "Normal",
+                        text: "Michael Roberts'ın 'Askeri Devrim' teorisine göre, orduların büyümesi ve disiplinli piyade taktiklerine geçişin en önemli siyasi sonucu nedir?",
+                        question: "Askeri büyümenin siyasi sonucu:",
+                        options: [
+                            "Merkezi, bürokratik ve vergi toplayan modern devletin doğuşu",
+                            "Feodalizmin güçlenmesi",
+                            "Savaşların azalması",
+                            "Dinin etkisinin artması"
+                        ],
+                        correct: 0,
+                        explanation: "Büyük orduları beslemek için devletler daha organize olmak, nüfus saymak ve düzenli vergi toplamak zorunda kaldı."
+                    },
+                    {
+                        id: 10,
+                        difficulty: "Normal",
+                        text: "Russo-Japon Savaşı'nı (1905) izleyen Batılı gözlemcilerin çıkardığı 'yanlış ders' neydi?",
+                        question: "1905 savaşından çıkan yanlış ders:",
+                        options: [
+                            "Makineli tüfeğin çok güçlü olduğu",
+                            "Rusların lojistik hatası yaptığı",
+                            "Siper kazmanın şart olduğu",
+                            "Moral gücün ve taarruz ruhunun (Spirit), ateş gücünden (Firepower) üstün olduğu"
+                        ],
+                        correct: 3,
+                        explanation: "Japonların 'Bushido' ruhuyla kazandığını sandılar, oysa Japonlar modern silahları çok iyi kullanmıştı. Bu hata 'Taarruz Kültü'nü doğurdu."
+                    },
+                    {
+                        id: 11,
+                        difficulty: "Normal",
+                        text: "Osmanlı Tımar sisteminin (atlı asker) çöküşünün temel askeri-teknik sebebi neydi?",
+                        question: "Tımarın çöküş nedeni:",
+                        options: [
+                            "Toprakların verimsizleşmesi",
+                            "At fiyatlarının artması",
+                            "Savaş sahasında tüfekli piyadenin (Sekban/Yeniçeri) süvariden daha önemli hale gelmesi",
+                            "Anadolu'da isyanlar çıkması"
+                        ],
+                        correct: 2,
+                        explanation: "Kılıçlı süvari, ateşli silahlar karşısında etkisizleşince devlet nakit parayla tüfekli asker toplamak zorunda kaldı (İltizam)."
+                    },
+                    {
+                        id: 12,
+                        difficulty: "Normal",
+                        text: "Prusya Genelkurmayı'nın I. Dünya Savaşı öncesi planı (Schlieffen), neden 'demiryolu tarifelerine' bu kadar bağımlıydı?",
+                        question: "Schlieffen Planı ve demiryolları:",
+                        options: [
+                            "Milyonlarca askeri, düşman (Rusya) hazırlanmadan önce sınıra yığmak için dakika dakika planlama gerekiyordu",
+                            "Tren biletleri ucuzdu",
+                            "Atları korumak istiyorlardı",
+                            "Almanlar trenleri seviyordu"
+                        ],
+                        correct: 0,
+                        explanation: "Seferberlik hızı hayatiydi. Rusya geç toplanacağı için önce Fransa'yı trenlerle vurup sonra doğuya döneceklerdi."
+                    },
+                    {
+                        id: 13,
+                        difficulty: "Normal",
+                        text: "1912 Balkan Savaşı'nda Osmanlı ordusunun hezimetinin temel 'doktrinel' sebebi neydi?",
+                        question: "Balkan Savaşı doktrin hatası:",
+                        options: [
+                            "Silah eksikliği",
+                            "Donanmanın olmaması",
+                            "Stratejik savunma yapması gerekirken, hazırlıksız ve eğitimsiz birliklerle (Redifler) taarruz etmesi",
+                            "Düşmanın sayıca çok olması"
+                        ],
+                        correct: 2,
+                        explanation: "Batı'dan etkilenerek benimsenen 'Saldıran kazanır' (Offensive) fikri, henüz toplanmamış orduyu felakete sürükledi."
+                    },
+                    {
+                        id: 14,
+                        difficulty: "Normal",
+                        text: "Amerikan İç Savaşı'nda Kuzey'in (Union) Güney'i (Confederate) yenmesini sağlayan 'Anaconda Planı'nın mantığı neydi?",
+                        question: "Anaconda Planı'nın özü:",
+                        options: [
+                            "Gerilla savaşı yapmak",
+                            "Sadece başkente saldırmak",
+                            "Diplomatik barış aramak",
+                            "Düşmanı ekonomik olarak boğmak (Deniz ablukası) ve lojistik kaynaklarını kesmek"
+                        ],
+                        correct: 3,
+                        explanation: "Savaş sadece cephede değil, düşmanın ekonomisinde ve fabrikalarında kazanılır (Endüstriyel Savaş)."
+                    },
+                    {
+                        id: 15,
+                        difficulty: "Normal",
+                        text: "I. Dünya Savaşı'nda 'Siper Kilitlenmesi'ni (Stalemate) yaratan teknolojik denklem hangisidir?",
+                        question: "Siper kilitlenmesinin formülü:",
+                        options: [
+                            "Savunma (Makineli Tüfek/Tel/Topçu) > Taarruz (Piyade)",
+                            "Uçak > Gemi",
+                            "Tank > Top",
+                            "Süvari > Piyade"
+                        ],
+                        correct: 0,
+                        explanation: "Savunma silahları o kadar güçlendi ki, taarruz eden taraf (piyade) açık alanda (No-man's land) anında imha ediliyordu."
+                    },
+                    {
+                        id: 16,
+                        difficulty: "Normal",
+                        text: "Moltke'nin 'Hiçbir plan düşmanla temastan sonra hayatta kalamaz' sözü, hangi Alman komuta sisteminin temelidir?",
+                        question: "Moltke'nin komuta sistemi:",
+                        options: [
+                            "Befehlstaktik (Emir Taktikleri)",
+                            "Merkeziyetçilik",
+                            "Auftragstaktik (Görev Taktikleri / İnisiyatif)",
+                            "Politik Denetim"
+                        ],
+                        correct: 2,
+                        explanation: "Savaş kaosu (Sürtünme) içinde merkezden her şeyi yönetemezsiniz; sahadaki komutana 'ne yapacağını' söyleyip 'nasıl yapacağını' ona bırakmalısınız."
+                    },
+                    // --- ZOR (4 Soru - İlişkilendirme ve Analiz) ---
+                    {
+                        id: 17,
+                        difficulty: "Zor",
+                        text: "ANALİZ SORUSU: 1905 Russo-Japon Savaşı'ndaki 'Japon Ruhu' (Bushido) efsanesi ile 1914'te Fransız ordusunun 'Elan Vital' (Saldırı Ruhu) doktrini ve Osmanlı'nın 1912 Balkan hezimeti arasında nasıl bir neden-sonuç ilişkisi vardır?",
+                        question: "Doktrinel ilişki analizi:",
+                        options: [
+                            "Hepsi ateş gücünün (teknolojinin) önemini reddedip, moral gücün (insan iradesinin) savaşı kazanacağına inanmış ve 'Taarruz Kültü' yüzünden büyük kayıplar vermiştir.",
+                            "Hepsi savunma savaşını tercih etmiştir.",
+                            "Hepsi lojistik sorunlar yüzünden kaybetmiştir.",
+                            "Hepsi Alman askeri danışmanlarını dinlemiştir."
+                        ],
+                        correct: 0,
+                        explanation: "Hocanın 'Yanılgılar Çağı' dediği dönem. Batılılar Japonların zaferini yanlış yorumlayıp 'Cesaret teknolojiği yener' dediler. Bu dogma I. Dünya Savaşı'nda ve Balkan Savaşı'nda milyonların ölümüne sebep oldu."
+                    },
+                    {
+                        id: 18,
+                        difficulty: "Zor",
+                        text: "İLİŞKİLENDİRME SORUSU: Michael Roberts'ın 'Askeri Devrim' tezi ile Osmanlı'daki 'Menzil Teşkilatı'nın kurulması ve Tımar'ın yerini İltizam'ın alması hangi ortak tarihsel süreci işaret eder?",
+                        question: "Doğu-Batı askeri dönüşüm paralelliği:",
+                        options: [
+                            "Devletlerin küçülerek yerel yönetimlere bölündüğünü",
+                            "Osmanlı'nın Batı'dan tamamen koptuğunu",
+                            "Teknolojinin gerilediğini",
+                            "Savaşın artık 'kendi kendine yeten' şövalye/sipahilerle değil, merkezin finanse ettiği ve lojistiğini sağladığı devasa ordularla yapıldığını (Merkezi Devletleşme)"
+                        ],
+                        correct: 3,
+                        explanation: "Her iki süreç de (Avrupa ve Osmanlı), savaşın maliyetinin artmasıyla devletin ekonomiyi ve lojistiği merkezileştirmek zorunda kaldığını gösterir. Artık asker 'cebinden' değil 'hazineden' beslenir."
+                    },
+                    {
+                        id: 19,
+                        difficulty: "Zor",
+                        text: "DOKTRİN ANALİZİ: Clausewitz'in 'Sürtünme' (Friction) kavramı, I. Dünya Savaşı'nın başında Almanların uyguladığı Schlieffen Planı'nın başarısızlığını nasıl açıklar?",
+                        question: "Clausewitz ve Schlieffen Planı:",
+                        options: [
+                            "Sürtünme, Fransızların daha iyi silahları olduğunu gösterir.",
+                            "Clausewitz plan yapmayı reddettiği için Almanlar plansız saldırdı.",
+                            "Plan kağıt üzerinde mükemmeldi (Matematiksel), ancak sahadaki yorgunluk, iletişim kopukluğu ve ikmal gecikmeleri (Sürtünme) makineyi durdurdu.",
+                            "Planın başarısızlığı tamamen Rusya'nın erken saldırmasıydı."
+                        ],
+                        correct: 2,
+                        explanation: "Genelkurmay'ın masa başında cetvelle çizdiği 'günlük ilerleme' planı, askerin ayağındaki yara, atın açlığı ve köprülerin yıkılması gibi 'sürtünme' unsurları yüzünden sahada çöktü."
+                    },
+                    {
+                        id: 20,
+                        difficulty: "Zor",
+                        text: "SENTEZ SORUSU: Barut İmparatorlukları tezi ve 'Savaşın Demokratikleşmesi' kavramı birlikte düşünüldüğünde, ateşli silahların 16. yüzyıl sosyal yapısına en büyük etkisi nedir?",
+                        question: "Ateşli silahların sosyal etkisi:",
+                        options: [
+                            "Savaşçılık tekelinin aristokrasiden (Şövalye/Sipahi) alınıp, tüfekle donatılmış sıradan halka (Piyade) geçmesi ve soylu sınıfın askeri/politik gücünün kırılması",
+                            "Savaşların daha kısa sürmesi",
+                            "Kralların yetkilerinin azalması",
+                            "Orduların küçülmesi"
+                        ],
+                        correct: 0,
+                        explanation: "Bir köylü, elindeki tüfekle (birkaç haftalık eğitimle), hayatını savaş sanatına adamış zengin bir şövalyeyi öldürebilir hale geldi. Bu, feodal hiyerarşiyi yıkan en büyük devrimdir."
+                    }
+                ]
+            }
+        ];
+
+        // --- COMPONENTS ---
+
+        function App() {
+            const [activeModule, setActiveModule] = useState(null);
+            const [mode, setMode] = useState('menu'); // 'menu', 'notes', 'quiz'
+            const [darkMode, setDarkMode] = useState(false);
+
+            useEffect(() => {
+                if (darkMode) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            }, [darkMode]);
+
+            const toggleDarkMode = () => setDarkMode(!darkMode);
+
+            const handleModuleSelect = (module) => {
+                setActiveModule(module);
+                setMode('menu');
+            };
+
+            const goBack = () => {
+                setMode('menu');
+                setActiveModule(null);
+            };
+
+            return (
+                <div className="max-w-5xl mx-auto p-4 md:p-8 w-full flex-grow flex flex-col relative">
+                    <button 
+                        onClick={toggleDarkMode}
+                        className="absolute top-6 right-6 p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors shadow-sm z-50"
+                        title={darkMode ? "Aydınlık Mod" : "Karanlık Mod"}
+                    >
+                        {darkMode ? <i className="fas fa-sun"></i> : <i className="fas fa-moon"></i>}
+                    </button>
+
+                    <header className="mb-10 text-center pt-4">
+                        <div className="inline-block p-3 rounded-full bg-military-100 dark:bg-military-900 text-military-700 dark:text-military-300 mb-4 transition-colors">
+                            <i className="fas fa-shield-alt text-2xl"></i>
+                        </div>
+                        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-3 tracking-tight transition-colors">DAT Final Pro Seti</h1>
+                        <p className="text-gray-500 dark:text-gray-400 max-w-lg mx-auto text-lg transition-colors">Sınav Odaklı Çalışma Kampı</p>
+                    </header>
+
+                    <main className="flex-grow">
+                        {!activeModule && (
+                            <div>
+                                {/* Final Exam Card - Special Styling */}
+                                <div 
+                                    onClick={() => handleModuleSelect(courseData.find(c => c.id === 'final-exam'))}
+                                    className="bg-gradient-to-r from-military-600 to-military-800 dark:from-military-800 dark:to-black p-8 rounded-2xl shadow-lg border border-transparent cursor-pointer hover:shadow-2xl hover:scale-[1.02] transition-all mb-8 text-white relative overflow-hidden group"
+                                >
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-bl-full -mr-6 -mt-6 transition-transform group-hover:scale-110"></div>
+                                    <div className="relative z-10">
+                                        <div className="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-bold rounded-full uppercase tracking-wider mb-4">
+                                            Önerilen Başlangıç
+                                        </div>
+                                        <h3 className="font-bold text-2xl mb-2">Final Deneme Sınavı</h3>
+                                        <p className="text-military-100 max-w-2xl text-lg opacity-90">
+                                            Hocanın derste özellikle vurguladığı konulardan oluşan 20 soruluk karma test. Kendini dene!
+                                        </p>
+                                    </div>
+                                    <div className="mt-6 flex items-center font-bold text-white/90">
+                                        Sınavı Başlat <i className="fas fa-play-circle ml-2 text-xl"></i>
+                                    </div>
+                                </div>
+
+                                {/* Other Modules Grid */}
+                                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                                    {courseData.filter(c => c.id !== 'final-exam').map(module => (
+                                        <ModuleCard key={module.id} module={module} onClick={handleModuleSelect} />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {activeModule && mode === 'menu' && (
+                            <ModuleDetail 
+                                module={activeModule} 
+                                onStartNotes={() => setMode('notes')}
+                                onStartQuiz={() => setMode('quiz')}
+                                onBack={goBack}
+                            />
+                        )}
+
+                        {activeModule && mode === 'notes' && (
+                            <NotesView module={activeModule} onBack={() => setMode('menu')} />
+                        )}
+
+                        {activeModule && mode === 'quiz' && (
+                            <QuizView module={activeModule} onBack={() => setMode('menu')} />
+                        )}
+                    </main>
+
+                    <footer className="mt-16 text-center text-sm text-gray-400 py-6 border-t border-gray-200 dark:border-gray-800 transition-colors">
+                        <p className="font-medium">Dünya Askeri Tarihi kitabından derlenmiştir.</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        function ModuleCard({ module, onClick }) {
+            return (
+                <div 
+                    onClick={() => onClick(module)}
+                    className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 cursor-pointer card-hover flex flex-col h-full relative overflow-hidden group transition-colors"
+                >
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-military-50 dark:bg-military-900/50 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
+                    
+                    <div className="relative z-10">
+                        <div className="inline-block px-3 py-1 bg-military-100 dark:bg-military-900 text-military-800 dark:text-military-200 text-xs font-bold rounded-full uppercase tracking-wider mb-4 transition-colors">
+                            {module.label}
+                        </div>
+                        <h3 className="font-bold text-xl text-gray-900 dark:text-white mb-3 leading-tight transition-colors">{module.title}</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-4 transition-colors">{module.description}</p>
+                    </div>
+                    
+                    <div className="mt-auto pt-4 flex items-center text-military-600 dark:text-military-400 text-sm font-semibold group-hover:translate-x-1 transition-transform">
+                        {module.questions.length} Soru ile Başla <i className="fas fa-arrow-right ml-2"></i>
+                    </div>
+                </div>
+            );
+        }
+
+        function ModuleDetail({ module, onStartNotes, onStartQuiz, onBack }) {
+            return (
+                <div className="animate-fade-in">
+                    <button onClick={onBack} className="mb-6 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white flex items-center gap-2 transition-colors font-medium">
+                        <i className="fas fa-arrow-left"></i> Tüm Bölümler
+                    </button>
+                    
+                    <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700 transition-colors">
+                        <div className="bg-military-900 text-white p-10 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 opacity-10 transform translate-x-10 -translate-y-10">
+                                <i className="fas fa-chess-knight text-9xl"></i>
+                            </div>
+                            <div className="relative z-10">
+                                <span className="inline-block px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-xs font-bold uppercase tracking-wider mb-3 text-military-100">
+                                    {module.label}
+                                </span>
+                                <h2 className="text-3xl font-bold mb-3">{module.title}</h2>
+                                <p className="text-military-100 max-w-2xl text-lg leading-relaxed">{module.description}</p>
+                            </div>
+                        </div>
+                        
+                        <div className="p-10 grid md:grid-cols-2 gap-8">
+                            <div 
+                                onClick={onStartNotes}
+                                className="border-2 border-gray-100 dark:border-gray-700 rounded-2xl p-8 text-center cursor-pointer hover:border-blue-200 dark:hover:border-blue-700 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-all group relative overflow-hidden"
+                            >
+                                <div className="w-20 h-20 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform shadow-sm">
+                                    <i className="fas fa-book-open text-3xl"></i>
+                                </div>
+                                <h3 className="font-bold text-xl mb-2 text-gray-900 dark:text-white">Çalışma Notları</h3>
+                                <p className="text-gray-500 dark:text-gray-400">Özetler ve Kilit Noktalar</p>
+                            </div>
+
+                            <div 
+                                onClick={onStartQuiz}
+                                className="border-2 border-gray-100 dark:border-gray-700 rounded-2xl p-8 text-center cursor-pointer hover:border-red-200 dark:hover:border-red-700 hover:bg-red-50/50 dark:hover:bg-red-900/20 transition-all group relative overflow-hidden"
+                            >
+                                <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:-rotate-3 transition-transform shadow-sm">
+                                    <i className="fas fa-brain text-3xl"></i>
+                                </div>
+                                <h3 className="font-bold text-xl mb-2 text-gray-900 dark:text-white">Analiz Testi ({module.questions.length} Soru)</h3>
+                                <p className="text-gray-500 dark:text-gray-400">Bilgi, yorum ve çağrışım soruları</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function NotesView({ module, onBack }) {
+            return (
+                <div className="animate-fade-in max-w-3xl mx-auto">
+                    <div className="flex items-center justify-between mb-8">
+                        <button onClick={onBack} className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white flex items-center gap-2 font-medium transition-colors">
+                            <i className="fas fa-arrow-left"></i> Geri Dön
+                        </button>
+                        <span className="text-sm font-bold text-military-700 dark:text-military-300 bg-military-100 dark:bg-military-900 px-3 py-1 rounded-full transition-colors">{module.label}</span>
+                    </div>
+
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden transition-colors">
+                        <div className="bg-military-50 dark:bg-military-900/50 p-8 border-b border-military-100 dark:border-gray-700">
+                             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{module.title}</h2>
+                             <p className="text-military-700 dark:text-military-300 mt-2">Özet Notlar</p>
+                        </div>
+                        
+                        <div className="p-8 md:p-10">
+                            <ul className="space-y-8">
+                                {module.notes.map((note, idx) => (
+                                    <li key={idx} className="flex gap-5 items-start">
+                                        <div className="flex-shrink-0 w-8 h-8 bg-yellow-400 text-white rounded-lg flex items-center justify-center font-bold text-sm mt-1 shadow-sm">
+                                            {idx + 1}
+                                        </div>
+                                        <div className="flex-grow">
+                                            <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg">
+                                                {note.includes(':') ? (
+                                                    <span>
+                                                        <strong className="text-gray-900 dark:text-white font-bold block mb-1">{note.split(':')[0]}:</strong>
+                                                        {note.split(':').slice(1).join(':')}
+                                                    </span>
+                                                ) : note}
+                                            </p>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function QuizView({ module, onBack }) {
+            const [currentQIndex, setCurrentQIndex] = useState(0);
+            const [selectedOption, setSelectedOption] = useState(null);
+            const [showResult, setShowResult] = useState(false);
+            const [score, setScore] = useState(0);
+            const [quizFinished, setQuizFinished] = useState(false);
+
+            const question = module.questions[currentQIndex];
+
+            const handleOptionClick = (idx) => {
+                if (showResult) return;
+                setSelectedOption(idx);
+                setShowResult(true);
+                if (idx === question.correct) {
+                    setScore(s => s + 1);
+                }
+            };
+
+            const nextQuestion = () => {
+                if (currentQIndex < module.questions.length - 1) {
+                    setCurrentQIndex(c => c + 1);
+                    setSelectedOption(null);
+                    setShowResult(false);
+                } else {
+                    setQuizFinished(true);
+                }
+            };
+
+            if (quizFinished) {
+                return (
+                    <div className="max-w-xl mx-auto text-center py-16 animate-fade-in bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-8 border border-gray-100 dark:border-gray-700 transition-colors">
+                        <div className="mb-8 relative inline-block">
+                             <svg className="w-40 h-40 transform -rotate-90" viewBox="0 0 100 100">
+                                <circle className="text-gray-100 dark:text-gray-700" strokeWidth="8" stroke="currentColor" fill="transparent" r="42" cx="50" cy="50" />
+                                <circle 
+                                    className="text-military-500" 
+                                    strokeWidth="8" 
+                                    strokeDasharray={264} 
+                                    strokeDashoffset={264 - (264 * score / module.questions.length)} 
+                                    strokeLinecap="round" 
+                                    stroke="currentColor" 
+                                    fill="transparent" 
+                                    r="42" cx="50" cy="50" 
+                                />
+                            </svg>
+                            <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center text-4xl font-bold text-gray-800 dark:text-white">
+                                %{Math.round((score / module.questions.length) * 100)}
+                            </div>
+                        </div>
+                        
+                        <h2 className="text-3xl font-bold mb-3 text-gray-900 dark:text-white">Bölüm Tamamlandı!</h2>
+                        <p className="text-gray-500 dark:text-gray-400 mb-10 text-lg">{module.questions.length} sorudan <span className="font-bold text-military-700 dark:text-military-400">{score}</span> tanesini doğru bildin.</p>
+                        
+                        <button 
+                            onClick={onBack}
+                            className="bg-military-900 dark:bg-military-700 text-white px-10 py-4 rounded-xl hover:bg-military-800 dark:hover:bg-military-600 transition-colors font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                        >
+                            Menüye Dön
+                        </button>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="max-w-2xl mx-auto animate-fade-in">
+                    {/* Header / Progress */}
+                    <div className="flex items-center justify-between mb-6">
+                        <button onClick={onBack} className="text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 font-medium transition-colors">
+                            <i className="fas fa-times mr-1"></i> Çıkış
+                        </button>
+                        <span className="text-sm font-bold text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full transition-colors">
+                            {currentQIndex + 1} / {module.questions.length}
+                        </span>
+                    </div>
+
+                    {/* Progress Bar */}
+                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-8 overflow-hidden transition-colors">
+                        <div 
+                            className="bg-military-500 h-2 rounded-full transition-all duration-500 ease-out"
+                            style={{ width: `${((currentQIndex + 1) / module.questions.length) * 100}%` }}
+                        ></div>
+                    </div>
+
+                    {/* Question Card */}
+                    <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors">
+                        <div className="p-8 md:p-10">
+                            {/* Quote/Context Area */}
+                            {question.type === 'quote' && (
+                                <blockquote className="relative mb-8 pl-6 border-l-4 border-military-500 italic text-gray-600 dark:text-gray-300 quote-font text-lg transition-colors">
+                                    <i className="fas fa-quote-left absolute -top-2 -left-3 text-military-200 dark:text-military-800 text-xl bg-white dark:bg-gray-800 p-1"></i>
+                                    "{question.text}"
+                                </blockquote>
+                            )}
+                            {question.type === 'paragraph' && (
+                                <div className="mb-8 bg-blue-50/50 dark:bg-blue-900/20 p-6 rounded-2xl border border-blue-100 dark:border-blue-800 transition-colors">
+                                    <span className="text-xs font-bold text-blue-800 dark:text-blue-300 uppercase tracking-wide mb-2 block">Metin Analizi</span>
+                                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">
+                                        {question.text}
+                                    </p>
+                                </div>
+                            )}
+
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 leading-snug transition-colors">{question.question}</h3>
+
+                            {/* Options */}
+                            <div className="space-y-3">
+                                {question.options.map((opt, idx) => {
+                                    let btnClass = "w-full text-left p-5 rounded-xl border-2 transition-all duration-200 flex items-center justify-between group ";
+                                    
+                                    if (!showResult) {
+                                        btnClass += selectedOption === idx 
+                                            ? "border-military-500 bg-military-50 dark:bg-military-900/40 text-military-900 dark:text-military-100 shadow-md" 
+                                            : "border-gray-100 dark:border-gray-700 hover:border-military-200 dark:hover:border-military-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300";
+                                    } else {
+                                        if (idx === question.correct) {
+                                            btnClass += "border-green-500 bg-green-50 dark:bg-green-900/30 text-green-900 dark:text-green-100 ring-1 ring-green-500 shadow-sm";
+                                        } else if (idx === selectedOption) {
+                                            btnClass += "border-red-300 bg-red-50 dark:bg-red-900/30 text-red-900 dark:text-red-100";
+                                        } else {
+                                            btnClass += "border-gray-100 dark:border-gray-700 opacity-40 text-gray-400 dark:text-gray-500";
+                                        }
+                                    }
+
+                                    return (
+                                        <button 
+                                            key={idx}
+                                            onClick={() => handleOptionClick(idx)}
+                                            disabled={showResult}
+                                            className={btnClass}
+                                        >
+                                            <span className="font-medium text-lg">{opt}</span>
+                                            {showResult && idx === question.correct && <i className="fas fa-check-circle text-green-600 dark:text-green-400 text-xl"></i>}
+                                            {showResult && idx === selectedOption && idx !== question.correct && <i className="fas fa-times-circle text-red-500 dark:text-red-400 text-xl"></i>}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Explanation Box */}
+                            {showResult && (
+                                <div className="mt-8 bg-gray-50 dark:bg-gray-700/30 border border-gray-200 dark:border-gray-600 rounded-2xl p-6 animate-fade-in transition-colors">
+                                    <h4 className="font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+                                        <i className="fas fa-lightbulb text-yellow-500"></i> Analiz & Çözüm
+                                    </h4>
+                                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                                        {question.explanation}
+                                    </p>
+                                    <div className="mt-6 flex justify-end">
+                                        <button 
+                                            onClick={nextQuestion}
+                                            className="bg-military-900 dark:bg-military-700 text-white px-8 py-3 rounded-xl hover:bg-military-800 dark:hover:bg-military-600 transition-colors font-semibold shadow-lg"
+                                        >
+                                            {currentQIndex === module.questions.length - 1 ? 'Sonucu Gör' : 'Sonraki Soru'}
+                                            <i className="fas fa-arrow-right ml-2"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+    </style>
+</body>
+</html>

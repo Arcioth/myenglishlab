@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Pearson Solver</title>
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --text-color: #333;
+            --bg-color: #f8f9fa;
+            --section-bg: #ffffff;
+            --btn-bg: #e2e6ea;
+            --btn-text: #495057;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        /* Language Switcher */
+        .lang-switcher {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .lang-btn {
+            background-color: var(--btn-bg);
+            color: var(--btn-text);
+            border: none;
+            padding: 8px 15px;
+            margin-left: 5px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .lang-btn:hover {
+            background-color: #dbe2e8;
+        }
+
+        .lang-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .logo-img {
+            height: 40px;
+            width: auto;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .date {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        section {
+            background: var(--section-bg);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        h2 {
+            color: #2c3e50;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 15px;
+            margin-top: 0;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .highlight {
+            background-color: #e8f4fd;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .footer-address {
+            margin-bottom: 15px;
+            font-style: normal;
+        }
+
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="lang-switcher">
+            <button class="lang-btn active" onclick="setLang('en')">English</button>
+            <button class="lang-btn" onclick="setLang('tr')">Türkçe</button>
+            <button class="lang-btn" onclick="setLang('es')">Español</button>
+            <button class="lang-btn" onclick="setLang('de')">Deutsch</button>
+        </div>
+
+        <!-- ENGLISH CONTENT -->
+        <div id="lang-en" class="content-section active">
+            <header>
+                <div class="logo-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/71/Pearson_Logo_2025.jpg" alt="Pearson Logo" class="logo-img">
+                    <h1>MyEnglishLab / Pearson Solver</h1>
+                </div>
+                <p class="date">Valid: 2025 - 2026</p>
+            </header>
+
+            <section>
+                <h2>1. Data Collection & Usage Policy</h2>
+                <p>In compliance with the Chrome Web Store User Data Policy, we are transparent about our data practices. The "Pearson Solver" extension adheres to the principle of <strong>Data Minimization</strong>.</p>
+                
+                <h3>What We Do NOT Collect</h3>
+                <ul>
+                    <li>We do <span class="highlight">NOT</span> collect, store, or transmit your <strong>browsing history</strong> or visited URLs.</li>
+                    <li>We do <span class="highlight">NOT</span> collect or store your <strong>Pearson/MyEnglishLab credentials</strong> (username/password).</li>
+                    <li>We do <span class="highlight">NOT</span> store logs of the questions you solve on our servers.</li>
+                    <li>We do <span class="highlight">NOT</span> sell any data to third parties.</li>
+                </ul>
+
+                <h3>What We Do Collect</h3>
+                <ul>
+                    <li><strong>Extension Credentials:</strong> We process the specific username/password you created for this extension (via <code>myenglishlab.blog</code>) solely for authentication and credit management.</li>
+                    <li><strong>Ephemeral Page Content:</strong> When you click "Solve", the text from the current exercise is temporarily processed to generate an answer. This data is not retained after the solution is provided.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>2. Third-Party Data Processors</h2>
+                <p>To provide AI-powered solutions, this extension transmits data to the following service provider:</p>
+                <ul>
+                    <li><strong>Google Gemini API (Generative AI):</strong> The text content of English exercises is sent securely to Google's API for analysis.
+                        <ul>
+                            <li><strong>Purpose:</strong> To understand the context and generate the correct answer key.</li>
+                            <li><strong>Privacy:</strong> Data sent to the API is subject to <a href="https://policies.google.com/privacy" target="_blank">Google's Privacy Policy</a>.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>3. Permissions Justification</h2>
+                <p>We request the minimum permissions required for functionality:</p>
+                <ul>
+                    <li><strong>activeTab:</strong> Used to access the text of the exercise <em>only</em> when you explicitly interact with the extension.</li>
+                    <li><strong>storage:</strong> Used to save your extension settings (e.g., "Auto Skip" preference) locally on your device.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>4. Data Security</h2>
+                <ul>
+                    <li>All data is transmitted via secure <strong>HTTPS</strong> encryption.</li>
+                    <li>Your personal API keys are not exposed; the extension uses a secure backend token exchange system.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>5. Contact & Support</h2>
+                <p>For privacy concerns or support requests:</p>
+            </section>
+        </div>
+
+        <!-- TURKISH CONTENT -->
+        <div id="lang-tr" class="content-section">
+            <header>
+                 <div class="logo-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Pearson_logo.svg/320px-Pearson_logo.svg.png" alt="Pearson Logo" class="logo-img">
+                    <h1>MyEnglishLab / Pearson Solver</h1>
+                </div>
+                <p class="date">Geçerlilik: 2025 - 2026</p>
+            </header>
+
+            <section>
+                <h2>1. Veri Toplama ve Kullanım Politikası</h2>
+                <p>Chrome Web Mağazası Kullanıcı Verileri Politikası'na uygun olarak veri uygulamalarımız konusunda şeffafız. "Pearson Solver" uzantısı <strong>Veri Minimazasyonu</strong> ilkesine bağlıdır.</p>
+                
+                <h3>Neleri TOPLAMIYORUZ?</h3>
+                <ul>
+                    <li>Tarama geçmişinizi veya ziyaret ettiğiniz URL'leri <span class="highlight">TOPLAMIYORUZ</span>, saklamıyoruz veya iletmiyoruz.</li>
+                    <li><strong>Pearson/MyEnglishLab kimlik bilgilerinizi</strong> (kullanıcı adı/şifre) <span class="highlight">TOPLAMIYORUZ</span> veya saklamıyoruz.</li>
+                    <li>Çözdüğünüz soruların kayıtlarını sunucularımızda <span class="highlight">SAKLAMIYORUZ</span>.</li>
+                    <li>Herhangi bir veriyi üçüncü taraflara <span class="highlight">SATMIYORUZ</span>.</li>
+                </ul>
+
+                <h3>Neleri Topluyoruz?</h3>
+                <ul>
+                    <li><strong>Uzantı Kimlik Bilgileri:</strong> Yalnızca kimlik doğrulama ve kredi yönetimi için bu uzantı (<code>myenglishlab.blog</code> aracılığıyla) için oluşturduğunuz özel kullanıcı adını/şifreyi işleriz.</li>
+                    <li><strong>Geçici Sayfa İçeriği:</strong> "Çöz"e tıkladığınızda, mevcut alıştırmadaki metin bir cevap oluşturmak için geçici olarak işlenir. Bu veri, çözüm sağlandıktan sonra saklanmaz.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>2. Üçüncü Taraf Veri İşleyicileri</h2>
+                <p>Yapay zeka destekli çözümler sunmak için bu uzantı, verileri aşağıdaki servis sağlayıcıya iletir:</p>
+                <ul>
+                    <li><strong>Google Gemini API (Üretken YZ):</strong> İngilizce alıştırmalarının metin içeriği, analiz için güvenli bir şekilde Google'ın API'sine gönderilir.
+                        <ul>
+                            <li><strong>Amaç:</strong> Bağlamı anlamak ve doğru cevap anahtarını oluşturmak.</li>
+                            <li><strong>Gizlilik:</strong> API'ye gönderilen veriler <a href="https://policies.google.com/privacy" target="_blank">Google'ın Gizlilik Politikası'na</a> tabidir.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>3. İzinlerin Gerekçesi</h2>
+                <p>İşlevsellik için gereken minimum izinleri talep ediyoruz:</p>
+                <ul>
+                    <li><strong>activeTab:</strong> <em>Yalnızca</em> uzantıyla açıkça etkileşime girdiğinizde alıştırma metnine erişmek için kullanılır.</li>
+                    <li><strong>storage (Depolama):</strong> Uzantı ayarlarınızı (ör. "Otomatik Atlama" tercihi) yerel olarak cihazınıza kaydetmek için kullanılır.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>4. Veri Güvenliği</h2>
+                <ul>
+                    <li>Tüm veriler güvenli <strong>HTTPS</strong> şifrelemesi ile iletilir.</li>
+                    <li>Kişisel API anahtarlarınız ifşa edilmez; uzantı güvenli bir arka uç token değişim sistemi kullanır.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>5. İletişim ve Destek</h2>
+                <p>Gizlilik endişeleri veya destek talepleri için:</p>
+            </section>
+        </div>
+
+        <!-- SPANISH CONTENT -->
+        <div id="lang-es" class="content-section">
+            <header>
+                 <div class="logo-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Pearson_logo.svg/320px-Pearson_logo.svg.png" alt="Pearson Logo" class="logo-img">
+                    <h1>MyEnglishLab / Pearson Solver</h1>
+                </div>
+                <p class="date">Validez: 2025 - 2026</p>
+            </header>
+
+            <section>
+                <h2>1. Política de Recopilación y Uso de Datos</h2>
+                <p>En cumplimiento con la Política de Datos de Usuario de Chrome Web Store, somos transparentes sobre nuestras prácticas. La extensión "Pearson Solver" se adhiere al principio de <strong>Minimización de Datos</strong>.</p>
+                
+                <h3>Lo que NO Recopilamos</h3>
+                <ul>
+                    <li><span class="highlight">NO</span> recopilamos, almacenamos ni transmitimos su <strong>historial de navegación</strong>.</li>
+                    <li><span class="highlight">NO</span> recopilamos ni almacenamos sus <strong>credenciales de Pearson/MyEnglishLab</strong>.</li>
+                    <li><span class="highlight">NO</span> almacenamos registros de las preguntas que resuelve.</li>
+                    <li><span class="highlight">NO</span> vendemos datos a terceros.</li>
+                </ul>
+
+                <h3>Lo que Recopilamos</h3>
+                <ul>
+                    <li><strong>Credenciales de la Extensión:</strong> Procesamos el usuario/contraseña específico de esta extensión (vía <code>myenglishlab.blog</code>) solo para autenticación.</li>
+                    <li><strong>Contenido Efímero:</strong> Al hacer clic en "Resolver", el texto del ejercicio se procesa temporalmente para generar una respuesta. Estos datos no se conservan.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>2. Procesadores de Datos Externos</h2>
+                <ul>
+                    <li><strong>Google Gemini API:</strong> El texto de los ejercicios se envía de forma segura a la API de Google.
+                        <ul>
+                            <li><strong>Propósito:</strong> Generar la respuesta correcta.</li>
+                            <li><strong>Privacidad:</strong> Sujeto a la <a href="https://policies.google.com/privacy" target="_blank">Política de Privacidad de Google</a>.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>3. Justificación de Permisos</h2>
+                <ul>
+                    <li><strong>activeTab:</strong> Para acceder al texto del ejercicio <em>solo</em> cuando interactúa con la extensión.</li>
+                    <li><strong>storage:</strong> Para guardar sus configuraciones localmente.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>4. Seguridad de Datos</h2>
+                <ul>
+                    <li>Todos los datos se transmiten vía <strong>HTTPS</strong>.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>5. Contacto y Soporte</h2>
+                <p>Para consultas de privacidad:</p>
+            </section>
+        </div>
+
+        <!-- GERMAN CONTENT -->
+        <div id="lang-de" class="content-section">
+             <header>
+                 <div class="logo-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Pearson_logo.svg/320px-Pearson_logo.svg.png" alt="Pearson Logo" class="logo-img">
+                    <h1>MyEnglishLab / Pearson Solver</h1>
+                </div>
+                <p class="date">Gültigkeit: 2025 - 2026</p>
+            </header>
+
+            <section>
+                <h2>1. Datenerfassungs- und Nutzungsrichtlinie</h2>
+                <p>In Übereinstimmung mit der Benutzerdatenrichtlinie des Chrome Web Store sind wir transparent. Die Erweiterung "Pearson Solver" folgt dem Prinzip der <strong>Datenminimierung</strong>.</p>
+                
+                <h3>Was wir NICHT sammeln</h3>
+                <ul>
+                    <li>Wir sammeln, speichern oder übertragen <span class="highlight">KEINEN</span> <strong>Browserverlauf</strong>.</li>
+                    <li>Wir sammeln oder speichern <span class="highlight">KEINE</span> <strong>Pearson/MyEnglishLab-Anmeldedaten</strong>.</li>
+                    <li>Wir speichern <span class="highlight">KEINE</span> Protokolle der gelösten Fragen.</li>
+                    <li>Wir verkaufen <span class="highlight">KEINE</span> Daten an Dritte.</li>
+                </ul>
+
+                <h3>Was wir sammeln</h3>
+                <ul>
+                    <li><strong>Erweiterungs-Anmeldedaten:</strong> Wir verarbeiten Ihre Erweiterungs-Anmeldedaten (über <code>myenglishlab.blog</code>) nur zur Authentifizierung.</li>
+                    <li><strong>Flüchtiger Seiteninhalt:</strong> Beim Klicken auf "Lösen" wird der Text der Übung temporär verarbeitet. Diese Daten werden nicht gespeichert.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>2. Drittanbieter-Datenverarbeiter</h2>
+                <ul>
+                    <li><strong>Google Gemini API:</strong> Der Textinhalt wird zur Analyse sicher an Google gesendet.
+                        <ul>
+                            <li><strong>Zweck:</strong> Generierung der richtigen Antwort.</li>
+                            <li><strong>Datenschutz:</strong> Unterliegt der <a href="https://policies.google.com/privacy" target="_blank">Google-Datenschutzerklärung</a>.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>3. Berechtigungsbegründung</h2>
+                <ul>
+                    <li><strong>activeTab:</strong> Zugriff auf den Übungstext <em>nur</em> bei Interaktion.</li>
+                    <li><strong>storage:</strong> Lokales Speichern von Einstellungen.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>4. Datensicherheit</h2>
+                <ul>
+                    <li>Alle Daten werden über <strong>HTTPS</strong> übertragen.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>5. Kontakt & Support</h2>
+                <p>Für Datenschutzanfragen:</p>
+            </section>
+        </div>
+
+        <footer>
+            <div class="footer-address">
+                <strong>Address:</strong><br>
+                Doğukent Cad. İlkbahar Mah. Yıldızevler<br>
+                Çankaya/ANKARA, Türkiye
+            </div>
+            
+            <p><strong>Support Email:</strong> <a href="mailto:support@myenglishlab.blog">support@myenglishlab.blog</a></p>
+            <p>&copy; 2025-2026 Pearson Solver Team. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        function setLang(lang) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
+            // Remove active class from buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected section
+            document.getElementById('lang-' + lang).classList.add('active');
+            // Activate button logic
+            const buttons = document.querySelectorAll('.lang-btn');
+            if(lang === 'en') buttons[0].classList.add('active');
+            if(lang === 'tr') buttons[1].classList.add('active');
+            if(lang === 'es') buttons[2].classList.add('active');
+            if(lang === 'de') buttons[3].classList.add('active');
+        }
+    </script>
+
+</body>
+</html>
