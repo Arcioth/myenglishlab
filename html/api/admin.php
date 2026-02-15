@@ -3,8 +3,7 @@ session_start();
 require 'db_connect.php';
 
 // --- CONFIGURATION ---
-// CHANGE THIS PASSWORD IMMEDIATELY!
-$ADMIN_PASSWORD = '131331'; 
+$ADMIN_PASSWORD = 'I LOVE PENIS'; 
 // ---------------------
 
 // Handle Logout
